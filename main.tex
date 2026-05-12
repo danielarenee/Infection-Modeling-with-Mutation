@@ -105,6 +105,33 @@ Specific objectives include:
     hypothesis-testing framework of \cite{ngonghala2025} as a template.
 \end{enumerate}
 
+\section{Models}
+
+\subsection{ODE-PDE model}
+
+\begin{subequations}
+\begin{align}
+    x'(t) & = - \beta x y + v z(t,1) \\
+    y'(t) & = \beta x y - \gamma y + \beta y \int_0^1 f(c) z(c,t) dc \\
+    z_t + v z_s & = -\beta y f(c) z(c,t).
+\end{align}
+\end{subequations}
+Here $c\in[0,1]$ is the cross-immunity.  For the \emph{antigenic drift velocity} $v$,
+we could take a constant value or (in line with the idea of this project) relate it
+to the rate of new infections:
+\begin{align}
+    v(t) & = \delta \beta x y,
+\end{align}
+where $\delta$ is the mutation rate per infection.
+For $z$ we require a boundary condition at $s=0$, which is given by the
+influx of people leaving the infected pool:
+\begin{align}
+    z(t,c=0) & = \gamma y(t).
+\end{align}
+Meanwhile, $f(c)$ determines how beneficial cross-immunity is.  If we take $f(c)=0$,
+then any value $c<1$ gives full immunity.  Alternatively, $f$ could be any increasing
+function, going from a value of zero to one, such as $f(c)=c$, $f(c)=c^2$, etc.
+
 \bibliographystyle{plain}
 \bibliography{references}
 

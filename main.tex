@@ -1,0 +1,111 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{setspace}
+\onehalfspacing
+
+\title{%
+  \textbf{Compartmental Epidemiological Models with\\
+  Infection-Driven Viral Mutation}
+}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Background and Motivation}
+
+The classical SIR (Susceptible--Infected--Recovered) model and its variants
+have proven surprisingly effective at describing the spread of infectious
+diseases at the population level. A central assumption in the basic SIR
+framework is that recovered individuals acquire permanent immunity, so that
+each individual is infected at most once. In practice, two distinct mechanisms
+can invalidate this assumption: (1) waning of immune memory over time, and (2)
+viral mutation resulting in immune escape, whereby the pathogen evolves to
+circumvent the defences of previously infected hosts.
+
+The first mechanism---immunity waning---is well represented in the literature
+through SIRS-type models, in which recovered individuals return to the
+susceptible class at some fixed rate \cite{pease1987, casagrandi2006}.
+The second mechanism---mutation-driven immune escape---has received considerably
+less attention as a modelling target in its own right.
+Of particular importance is the observation that mutations do not occur at a
+fixed rate in time; rather, mutation opportunities arise proportionally to the
+number of active infections, since each replication event inside a host is a
+potential mutation event \cite{barrat2022, boni2006}.
+This coupling between infection prevalence and mutation supply is fundamental:
+it implies that the evolutionary trajectory of a pathogen is not independent
+of epidemic dynamics, but is instead shaped by them.
+
+The COVID-19 pandemic has made this interaction especially visible.
+Successive variants of concern---Alpha, Delta, Omicron, and its
+subvariants---demonstrated that immune escape, rather than waning immunity
+alone, was the dominant driver of renewed epidemic waves \cite{naturerev2023, covid_past2022}.
+The pandemic also generated an unprecedented volume of genomic sequence data,
+providing new opportunities to calibrate and validate mathematical models of
+viral evolution at the population level \cite{ngonghala2025}.
+
+\section*{Project Goals}
+
+This project will explore several approaches to incorporating
+infection-driven viral mutation into compartmental epidemiological models.
+The central modelling principle is that the rate at which the virus accumulates
+immune-escape mutations is proportional to the current infected population
+$I(t)$, rather than being a fixed external parameter.
+This is in contrast to the standard SIRS phenomenology, which implicitly treats
+antigenic drift as a clock running independently of epidemic dynamics
+\cite{pease1987, yaari2014}.
+
+Specific objectives include:
+
+\begin{enumerate}
+  \item \textbf{Model formulation.} Develop and compare two or three
+    ODE-based compartmental models of increasing complexity. Candidate
+    architectures include:
+    \begin{itemize}
+      \item A modified SIRS model in which the rate of transition from $R$
+        to $S$ is proportional to $I(t)$, extending the Pease framework
+        \cite{pease1987} with endogenous mutation supply.
+      \item A SIRC-type model \cite{casagrandi2006, li2017} augmented with
+        an infection-dependent cross-immunity erosion rate.
+      \item A combined ODE-PDE model in which immunity of the recovered population varies in time via an advection equation.
+%      \item A two-strain SIR model \cite{an2020} in which a mutant strain
+%        is generated at a rate proportional to the prevalence of the
+%        wild-type strain, following the multiscale coupling approach of
+%        recent work \cite{multiscale2026}.
+    \end{itemize}
+
+  \item \textbf{Equilibrium and stability analysis.} For each model,
+    compute disease-free and endemic equilibria, determine the basic
+    reproduction number $R_0$, and analyse local (and where possible global)
+    stability. A key question is whether the system admits a critical
+    population threshold below which epidemics die out and above which they
+    become cyclic or endemic.
+
+  \item \textbf{Bifurcation analysis.} Identify bifurcations in the
+    qualitative dynamics as parameters are varied---particularly the
+    infection rate, mutation rate, and cross-immunity---using both analytical
+    and numerical methods. The SIRC model is already known to exhibit
+    rich bifurcation structure including chaos \cite{casagrandi2006}, and
+    similar or richer behaviour is anticipated when mutation rate is coupled
+    to prevalence. Multi-strain models with cross-immunity are known to
+    produce epidemic cycling \cite{zhang2016}.
+
+  \item \textbf{Numerical simulation.} Solve the ODE systems numerically
+    over biologically relevant parameter ranges, generating time series of
+    $S(t)$, $I(t)$, $R(t)$ and any additional compartments. Classify the
+    qualitative regimes: extinction, single epidemic, sustained endemic,
+    or recurrent cyclic outbreaks.
+
+  \item \textbf{Comparison with data (if time permits).} Compare model
+    predictions with the succession of COVID-19 variant waves, using the
+    hypothesis-testing framework of \cite{ngonghala2025} as a template.
+\end{enumerate}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

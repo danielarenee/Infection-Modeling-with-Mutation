@@ -190,3 +190,92 @@ function jacobian_sircmw(u, p)
             J31 J32 J33 J34;
             J41 J42 J43 J44]
 end
+
+# Roots sweep helpers
+function bisection(f, a, b, tol=1e-9, maxiter=100)
+    fa = f(a)
+    fb = f(b)
+    for _ in 1:maxiter
+        c = (a + b) / 2
+        fc = f(c)
+        if abs(fc) < tol || (b - a)/2 < tol
+            return c
+        end
+        if sign(fc) == sign(fa)
+            a = c
+            fa = fc
+        else
+            b = c
+            fb = fc
+        end
+    end
+    return (a + b) / 2
+end
+
+function get_C(I, eps2, S0, beta0, γ=PAR_BASE.γ, σ=PAR_BASE.σ, μ=PAR_BASE.μ)
+    A = -eps2 * γ * σ * I
+    B = γ * (1.0 + eps2 * I * S0) + σ * (beta0 * I + μ)
+    D = μ * (1.0 - S0) - beta0 * I * S0
+    
+    if abs(A) < 1e-14
+        C = -D / B
+        return (0.0 <= C <= S0 / σ) ? C : nothing
+    end
+    
+    disc = B^2 - 4.0 * A * D
+    disc < 0.0 && return nothing
+    
+    C1 = (-B + sqrt(disc)) / (2.0 * A)
+    C2 = (-B - sqrt(disc)) / (2.0 * A)
+    
+    valid_C = Float64[]
+    if 0.0 <= C1 <= S0 / σ + 1e-12
+        push!(valid_C, C1)
+    end
+    if 0.0 <= C2 <= S0 / σ + 1e-12
+        push!(valid_C, C2)
+    end
+    
+    isempty(valid_C) && return nothing
+    return valid_C[1]
+end
+
+function get_endemic_roots(eps1, eps2, beta0; μ=PAR_BASE.μ, α=PAR_BASE.α, δ=PAR_BASE.δ, γ=PAR_BASE.γ, σ=PAR_BASE.σ)
+    S0 = (μ + α) / beta0
+    
+    function residual(I)
+        C = get_C(I, eps2, S0, beta0, γ, σ, μ)
+        C === nothing && return NaN
+        S = S0 - σ * C
+        eps1_SI_p1 = eps1 * S * I + 1.0
+        R = ((1.0 - σ) * beta0 * C * I + α * I) / (μ + eps1_SI_p1 * δ)
+        eps2_SI_p1 = eps2 * S * I + 1.0
+        dC = eps1_SI_p1 * δ * R - beta0 * C * I - (μ + eps2_SI_p1 * γ) * C
+        return dC
+    end
+    
+    I_grid = range(1e-10, 1.0, length=1000)
+    res_vals = [residual(i) for i in I_grid]
+    
+    roots = Tuple{Float64,Float64,Float64,Float64}[]
+    for k in 1:(length(I_grid)-1)
+        i1, i2 = I_grid[k], I_grid[k+1]
+        r1, r2 = res_vals[k], res_vals[k+1]
+        (isnan(r1) || isnan(r2)) && continue
+        if r1 * r2 <= 0.0
+            root_I = bisection(residual, i1, i2)
+            C_star = get_C(root_I, eps2, S0, beta0, γ, σ, μ)
+            if C_star !== nothing
+                S_star = S0 - σ * C_star
+                eps1_SI_p1 = eps1 * S_star * root_I + 1.0
+                R_star = ((1.0 - σ) * beta0 * C_star * root_I + α * root_I) / (μ + eps1_SI_p1 * δ)
+                if S_star >= -1e-12 && R_star >= -1e-12 && C_star >= -1e-12
+                    if !any(abs(root_I - r[2]) < 1e-6 for r in roots)
+                        push!(roots, (S_star, root_I, R_star, C_star))
+                    end
+                end
+            end
+        end
+    end
+    return roots
+end

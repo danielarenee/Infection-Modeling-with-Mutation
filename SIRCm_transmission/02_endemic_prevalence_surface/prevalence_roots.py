@@ -1,6 +1,6 @@
 """
 Computes the endemic equilibrium and stability of the SIRC model for a grid of parameters eps1 and eps2
-solving for the reduced equation in I and evaluating stability using the Jacobian
+solving for the reduced equation in I and evaluating stability using the Jacobian.
 The output is used by surface_epsilon_sircmw_prevalence_roots.ipynb 
 """
 
@@ -9,9 +9,9 @@ import numpy as np
 from pathlib import Path
 from scipy.optimize import brentq
 
-sys.path.append(str(Path(__file__).parent.parent.parent))
+sys.path.append(str(Path(__file__).parent.parent))
 
-from sircmw_I_utils import (
+from sircmw_utils import (
     MU as mu,
     ALPHA as alpha,
     DELTA as delta,
@@ -24,16 +24,12 @@ from sircmw_I_utils import (
 )
 
 # contact rate (default is 600)
-beta0 = 400
-
-# Scaling factor: choose between I_0 (0.001) and S_0 * I_0 (0.000178 / SI_0)
-# scale_factor = SI_0 # original SI_0 scaling
-scale_factor = 0.001 # new I_0 scaling
+beta0 = 500
 
 def run_one_root(relative_eps1, relative_eps2):
     """Computes endemic prevalence and stability for a single parameter pair"""
-    eps1 = relative_eps1 / scale_factor
-    eps2 = relative_eps2 / scale_factor
+    eps1 = relative_eps1 / SI_0
+    eps2 = relative_eps2 / SI_0
     
     roots = get_endemic_roots(eps1, eps2, beta0)
     if not roots:

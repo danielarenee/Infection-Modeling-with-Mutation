@@ -1,4 +1,6 @@
 """
+Script to recreate FIGURE 5
+
 Tracks the real and imaginary components of the eigenvalues of the Jacobian 
  of the SIRCmw model at the endemic equilibrium for a range of tilde_eps
 """
@@ -62,30 +64,11 @@ for k in range(4):
 
 ax1.set_xlabel(r'Common $\tilde{\varepsilon}$', fontsize=12)
 ax1.set_ylabel('Eigenvalue component', fontsize=12)
-ax1.set_title(fr'SIRCmw eigenvalues at endemic equilibrium ($\beta_0={beta0}$)', fontsize=13)
+ax1.set_title(fr'Full Jacobian Spectrum ($\beta_0={beta0}$)', fontsize=13)
 ax1.legend(fontsize=9, ncol=4)
 ax1.grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig(Path(__file__).parent / "sircmw_eigenvalues_full.png", dpi=150)
-plt.show()
-
-#%%
-# plot (zoomed)
-fig2, ax2 = plt.subplots(figsize=(11, 5))
-ax2.axhline(0, color='gray', linewidth=0.8, linestyle='--', zorder=0)
-
-for k in range(4):
-    ax2.plot(te_plot, eigvals[:, k].real, color=colors[k], linestyle='-',  linewidth=1.5, label=fr'Re($\lambda_{k+1}$)')
-    ax2.plot(te_plot, eigvals[:, k].imag, color=colors[k], linestyle=':', linewidth=1.5, label=fr'Im($\lambda_{k+1}$)')
-
-ax2.set_ylim(-0.1, 0.1)
-ax2.set_xlabel(r'Common $\tilde{\varepsilon}$', fontsize=12)
-ax2.set_ylabel('Eigenvalue component', fontsize=12)
-ax2.set_title('zoom on y (from -0.1 to 0.1)', fontsize=12)
-ax2.legend(fontsize=9, ncol=4)
-ax2.grid(True, alpha=0.3)
-plt.tight_layout()
-plt.savefig(Path(__file__).parent / "sircmw_eigenvalues_zoom.png", dpi=150)
+plt.savefig(Path(__file__).parent / "05_eigenvalues_exploration.png", dpi=150)
 plt.show()
 
 # test simulations

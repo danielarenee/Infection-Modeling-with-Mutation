@@ -7,7 +7,7 @@ using LinearAlgebra
 const PAR_BASE = (μ = 0.02, α = 365.0/3, δ = 1.0/1.61, γ = 0.35,
                   σ = 0.07874, β0 = 600.0, tilde_eps = 0.01)
 
-const SI_0 = 0.000178
+const SI_0 = 0.0002045
 const tilde_eps_MIN, tilde_eps_MAX = 0.0, 2.0
 const β0_MIN, β0_MAX = 0.0, 2000.0
 const EQ_TOL = 1e-9

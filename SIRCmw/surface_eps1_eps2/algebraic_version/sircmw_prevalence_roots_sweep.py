@@ -24,7 +24,7 @@ from sircmw_utils import (
 )
 
 # contact rate (default is 600)
-beta0 = 500
+beta0 = 600
 
 def run_one_root(relative_eps1, relative_eps2):
     """Computes endemic prevalence and stability for a single parameter pair"""

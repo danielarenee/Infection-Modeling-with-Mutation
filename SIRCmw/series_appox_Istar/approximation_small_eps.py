@@ -12,7 +12,7 @@ BETA0 = 600.0
 I_0 = 0.00114321
 EQ_TOL = 1e-9
 
-#Some functions modfied from from sircmw_utils.py (to account for new nonlinear term in the model)
+# Some functions modfied from from sircmw_utils.py (to account for new nonlinear term in the model)
 #We'll want to override this  once we settle in a model
 def poly_coeffs(beta, mu, alpha, gamma, delta, eps, sigma):
     """Ascending coefficients [k0, k1, k2, k3] of P(I,eps)/mu as a polynomial in I."""

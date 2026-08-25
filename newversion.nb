@@ -1,0 +1,246 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Wolfram 14.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       154,          7]
+NotebookDataLength[      7801,        236]
+NotebookOptionsPosition[      6913,        213]
+NotebookOutlinePosition[      7308,        229]
+CellTagsIndexPosition[      7265,        226]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"ClearAll", "[", "\"\<Global`*\>\"", "]"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{"dS", "=", 
+     RowBox[{
+      RowBox[{"\[Mu]", "*", 
+       RowBox[{"(", 
+        RowBox[{"1", "-", "S"}], ")"}]}], "-", 
+      RowBox[{"\[Beta]", "*", "S", "*", "II"}], "+", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"1", "+", " ", 
+         RowBox[{"\[Epsilon]2", "*", "g"}]}], ")"}], "*", "\[Gamma]", "*", 
+       "CC"}]}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"dI", "=", 
+     RowBox[{
+      RowBox[{"\[Beta]", "*", "S", "*", "II"}], "+", 
+      RowBox[{"\[Sigma]", "*", "\[Beta]", "*", "CC", "*", "II"}], "-", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"\[Mu]", "+", "\[Alpha]"}], ")"}], "*", "II"}]}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"dR", "=", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"1", "-", "\[Sigma]"}], ")"}], "*", "\[Beta]", "*", "CC", "*",
+        "II"}], "+", 
+      RowBox[{"\[Alpha]", "*", "II"}], "-", 
+      RowBox[{"\[Mu]", "*", "R"}], "-", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"1", "+", 
+         RowBox[{"\[Epsilon]1", "*", "g"}]}], ")"}], "*", "\[Delta]", "*", 
+       "R"}]}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"dC", "=", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"1", "+", 
+         RowBox[{"\[Epsilon]1", "*", "g"}]}], ")"}], "*", "\[Delta]", "*", 
+       "R"}], "-", 
+      RowBox[{"\[Beta]", "*", "CC", "*", "II"}], "-", 
+      RowBox[{"\[Mu]", "*", "CC"}], "-", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"1", "+", 
+         RowBox[{"\[Epsilon]2", "*", "g"}]}], ")"}], "*", "\[Gamma]", "*", 
+       "CC"}]}]}], ";"}], "\[IndentingNewLine]"}]}]], "Input",
+ CellChangeTimes->{{3.995246903689947*^9, 3.99524690419482*^9}, {
+  3.99524694630824*^9, 3.9952469801967697`*^9}},
+ CellLabel->"In[1]:=",ExpressionUUID->"493614b4-586f-42b7-bf25-e642b9b380f5"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"vars", "=", 
+     RowBox[{"{", 
+      RowBox[{"S", ",", "II", ",", "R", ",", "CC"}], "}"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"rhs", "=", 
+     RowBox[{"{", 
+      RowBox[{"dS", ",", "dI", ",", "dR", ",", "dC"}], "}"}]}], ";"}], "\n", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"now", " ", "we", " ", "get", " ", "the", " ", "jacobian"}], 
+    "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"J", "=", 
+     RowBox[{
+      RowBox[{"D", "[", 
+       RowBox[{"rhs", ",", 
+        RowBox[{"{", "vars", "}"}]}], "]"}], "//", "Simplify"}]}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"and", " ", "evaluate", " ", "in", " ", "X_", "0"}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"JDFE", "=", 
+     RowBox[{
+      RowBox[{"J", "/.", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"S", "->", "1"}], ",", 
+         RowBox[{"II", "->", "0"}], ",", 
+         RowBox[{"R", "->", "0"}], ",", 
+         RowBox[{"CC", "->", "0"}]}], "}"}]}], "//", "Simplify"}]}], ";"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"Print", "[", "\"\<Jacobian at DFE:\>\"", "]"}], "\n", 
+   RowBox[{"Print", "[", 
+    RowBox[{"JDFE", "//", "MatrixForm"}], "]"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+    "now", " ", "we", " ", "compute", " ", "the", " ", "eigenvalues"}], 
+    "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"evalsDFE", "=", 
+     RowBox[{
+      RowBox[{"Eigenvalues", "[", "JDFE", "]"}], "//", "Simplify"}]}], ";"}], 
+   "\n", 
+   RowBox[{"Print", "[", "\"\<\\nEigenvalues at DFE:\>\"", "]"}], "\n", 
+   RowBox[{"Print", "[", "evalsDFE", "]"}]}]}]], "Input",
+ CellLabel->"In[6]:=",ExpressionUUID->"49e2d392-6f19-40d1-aaed-8353e2b65b19"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"Jacobian at DFE:\"\>"], "Print",
+ CellChangeTimes->{3.995246985282483*^9},
+ CellLabel->
+  "During evaluation of \
+In[6]:=",ExpressionUUID->"d7e36fec-59a9-4e42-938e-a78efddc5878"],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"(", "\[NoBreak]", GridBox[{
+     {
+      RowBox[{"-", "\[Mu]"}], 
+      RowBox[{"-", "\[Beta]"}], "0", 
+      RowBox[{"\[Gamma]", "+", 
+       RowBox[{"g", " ", "\[Gamma]", " ", "\[Epsilon]2"}]}]},
+     {"0", 
+      RowBox[{
+       RowBox[{"-", "\[Alpha]"}], "+", "\[Beta]", "-", "\[Mu]"}], "0", "0"},
+     {"0", "\[Alpha]", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"-", "\[Delta]"}], " ", 
+        RowBox[{"(", 
+         RowBox[{"1", "+", 
+          RowBox[{"g", " ", "\[Epsilon]1"}]}], ")"}]}], "-", "\[Mu]"}], "0"},
+     {"0", "0", 
+      RowBox[{"\[Delta]", "+", 
+       RowBox[{"g", " ", "\[Delta]", " ", "\[Epsilon]1"}]}], 
+      RowBox[{
+       RowBox[{
+        RowBox[{"-", "\[Gamma]"}], " ", 
+        RowBox[{"(", 
+         RowBox[{"1", "+", 
+          RowBox[{"g", " ", "\[Epsilon]2"}]}], ")"}]}], "-", "\[Mu]"}]}
+    },
+    GridBoxAlignment->{"Columns" -> {{Center}}, "Rows" -> {{Baseline}}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.7]}, 
+        Offset[0.27999999999999997`]}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}}], "\[NoBreak]", ")"}],
+  Function[BoxForm`e$, 
+   MatrixForm[BoxForm`e$]]]], "Print",
+ CellChangeTimes->{3.995246985283576*^9},
+ CellLabel->
+  "During evaluation of \
+In[6]:=",ExpressionUUID->"287f7669-bc80-4be5-9d84-a38333f7ec6e"],
+
+Cell[BoxData["\<\"\\nEigenvalues at DFE:\"\>"], "Print",
+ CellChangeTimes->{3.995246985284502*^9},
+ CellLabel->
+  "During evaluation of \
+In[6]:=",ExpressionUUID->"49c5c06a-423b-40de-b568-a1bb11a8c83a"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"-", "\[Alpha]"}], "+", "\[Beta]", "-", "\[Mu]"}], ",", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"-", "\[Delta]"}], " ", 
+     RowBox[{"(", 
+      RowBox[{"1", "+", 
+       RowBox[{"g", " ", "\[Epsilon]1"}]}], ")"}]}], "-", "\[Mu]"}], ",", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"-", "\[Gamma]"}], " ", 
+     RowBox[{"(", 
+      RowBox[{"1", "+", 
+       RowBox[{"g", " ", "\[Epsilon]2"}]}], ")"}]}], "-", "\[Mu]"}], ",", 
+   RowBox[{"-", "\[Mu]"}]}], "}"}]], "Print",
+ CellChangeTimes->{3.995246985285081*^9},
+ CellLabel->
+  "During evaluation of \
+In[6]:=",ExpressionUUID->"92efd5d4-9b62-4608-a0b1-dbd9c9c7ded2"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{Full, Full},
+WindowMargins->{{316, Automatic}, {Automatic, 50}},
+FrontEndVersion->"14.3 for Mac OS X ARM (64-bit) (July 8, 2025)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"a9208ed3-4912-464b-b003-b5e63b1cc237"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[554, 20, 1966, 55, 192, "Input",ExpressionUUID->"493614b4-586f-42b7-bf25-e642b9b380f5"],
+Cell[CellGroupData[{
+Cell[2545, 79, 1835, 50, 335, "Input",ExpressionUUID->"49e2d392-6f19-40d1-aaed-8353e2b65b19"],
+Cell[CellGroupData[{
+Cell[4405, 133, 196, 4, 23, "Print",ExpressionUUID->"d7e36fec-59a9-4e42-938e-a78efddc5878"],
+Cell[4604, 139, 1397, 41, 67, "Print",ExpressionUUID->"287f7669-bc80-4be5-9d84-a38333f7ec6e"],
+Cell[6004, 182, 202, 4, 41, "Print",ExpressionUUID->"49c5c06a-423b-40de-b568-a1bb11a8c83a"],
+Cell[6209, 188, 676, 21, 23, "Print",ExpressionUUID->"92efd5d4-9b62-4608-a0b1-dbd9c9c7ded2"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+

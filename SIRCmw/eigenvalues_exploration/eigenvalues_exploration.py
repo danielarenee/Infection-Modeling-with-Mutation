@@ -26,12 +26,16 @@ from sircmw_utils import (
     get_algebraic_equilibria
 )
 
+# choose beta here (defaults to BETA0 from sircmw_utils)
+BETA = 600
+p = {'beta0': BETA}
+
 # sweep to find polynomium equilibria
 tilde_eps_vals = np.linspace(0, 2, 5000)
 rows = []
 
 for te in tilde_eps_vals:
-    eqs = get_algebraic_equilibria(te)
+    eqs = get_algebraic_equilibria(te, p)
     for eq in eqs:
         rows.append((te, *eq))
 
@@ -46,7 +50,7 @@ for i, row in enumerate(data):
     te  = row[0]
     eq  = row[1:]
     eps = te / SI_0
-    J   = sircmw_jacobian(eq, eps)
+    J   = sircmw_jacobian(eq, eps, p=p)
     eigs = np.linalg.eigvals(J)
     idx  = np.lexsort((-eigs.imag, -eigs.real))
     eigvals[i] = eigs[idx]
@@ -62,11 +66,12 @@ for k in range(4):
 
 ax1.set_xlabel(r'Common $\tilde{\varepsilon}$', fontsize=12)
 ax1.set_ylabel('Eigenvalue component', fontsize=12)
-ax1.set_title(fr'SIRCmw eigenvalues at endemic equilibrium ($\beta_0={beta0}$)', fontsize=13)
+ax1.set_title(fr'SIRCmw eigenvalues at endemic equilibrium ($\beta_0={BETA}$)', fontsize=13)
 ax1.legend(fontsize=9, ncol=4)
 ax1.grid(True, alpha=0.3)
 plt.tight_layout()
 plt.savefig(Path(__file__).parent / "sircmw_eigenvalues_full.png", dpi=150)
+plt.savefig(Path(__file__).parent / "sircmw_eigenvalues_full.pdf")
 plt.show()
 
 #%%
@@ -86,6 +91,7 @@ ax2.legend(fontsize=9, ncol=4)
 ax2.grid(True, alpha=0.3)
 plt.tight_layout()
 plt.savefig(Path(__file__).parent / "sircmw_eigenvalues_zoom.png", dpi=150)
+plt.savefig(Path(__file__).parent / "sircmw_eigenvalues_zoom.pdf")
 plt.show()
 
 # test simulations
@@ -98,11 +104,11 @@ eps_E0  = E0 / SI_0
 print(f"\nE0 = {E0:.4f}  →  eps = {eps_E0:.2f}   (Re(λ₂) max = {re_lam2[i0]:.6f})")
 
 # get equilibrium XE0 at E0
-XE0 = np.array(get_algebraic_equilibria(E0)[0], dtype=float)
+XE0 = np.array(get_algebraic_equilibria(E0, p)[0], dtype=float)
 print(f"XE0 = [S={XE0[0]:.6f}, I={XE0[1]:.6f}, R={XE0[2]:.6f}, C={XE0[3]:.6f}]")
 
-#  eigenvectors at XE0 
-J_E0 = sircmw_jacobian(XE0, eps_E0) # evaluate jacobian at xe0
+#  eigenvectors at XE0
+J_E0 = sircmw_jacobian(XE0, eps_E0, p=p) # evaluate jacobian at xe0
 vals_E0, vecs_E0  = np.linalg.eig(J_E0) # computes eigenvals and eigenvect
 idx_E0 = np.lexsort((-vals_E0.imag, -vals_E0.real)) # sort by descending real part and then imaginary
 vals_E0 = vals_E0[idx_E0]

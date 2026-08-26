@@ -39,10 +39,13 @@ def sircmw(t, y, p):
     
     return np.array([dS, dI, dR, dC])
 
-def sircmw_jacobian(y, eps, p=None):
+def sircmw_jacobian(y, eps1, eps2=None, p=None):
     """ 
-    Analytical Jacobian of SIRCmw (with eps1 = eps2 = eps) 
+    Analytical Jacobian of SIRCmw (supports distinct eps1 and eps2).
+    When eps2 is None, defaults to eps1 (symmetric case).
     """
+    if eps2 is None:
+        eps2 = eps1
     S, I, R, C = y
     if p is None:
         p = {}
@@ -54,10 +57,10 @@ def sircmw_jacobian(y, eps, p=None):
     gamma = p.get('gamma', GAMMA)
     
     return np.array([
-        [-mu - b*I + eps*I*gamma*C,      -b*S + eps*S*gamma*C,                       0.0,                          gamma*(1.0 + eps*S*I)      ],
-        [b*I,                             b*S + sigma*b*C - (mu + alpha),              0.0,                          sigma*b*I                  ],
-        [-eps*I*delta*R,                  (1.0-sigma)*b*C + alpha - eps*S*delta*R,    -(mu + delta*(1.0+eps*S*I)),   (1.0-sigma)*b*I            ],
-        [eps*I*delta*R - eps*I*gamma*C,   eps*S*delta*R - b*C - eps*S*gamma*C,         delta*(1.0+eps*S*I),          -(b*I + mu + gamma*(1.0+eps*S*I))],
+        [-mu - b*I + eps2*I*gamma*C,      -b*S + eps2*S*gamma*C,                         0.0,                              gamma*(1.0 + eps2*S*I)           ],
+        [b*I,                              b*S + sigma*b*C - (mu + alpha),                0.0,                              sigma*b*I                         ],
+        [-eps1*I*delta*R,                  (1.0-sigma)*b*C + alpha - eps1*S*delta*R,     -(mu + delta*(1.0+eps1*S*I)),     (1.0-sigma)*b*I                   ],
+        [eps1*I*delta*R - eps2*I*gamma*C,  eps1*S*delta*R - b*C - eps2*S*gamma*C,         delta*(1.0+eps1*S*I),             -(b*I + mu + gamma*(1.0+eps2*S*I))],
     ])
 
 def poly_coeffs(beta, mu, alpha, gamma, delta, eps, sigma):
@@ -429,6 +432,69 @@ def get_algebraic_equilibria(tilde_eps, p=None):
             equilibria.append(eq)
             
     return equilibria
+
+
+def get_C(I, eps2, S0, beta0, gamma=GAMMA, sigma=SIGMA, mu=MU):
+    """Solves the quadratic equation for C given I (supports asymmetric eps2)."""
+    A = -eps2 * gamma * sigma * I
+    B = gamma * (1.0 + eps2 * I * S0) + sigma * (beta0 * I + mu)
+    D = mu * (1.0 - S0) - beta0 * I * S0
+
+    if abs(A) < 1e-14:
+        C = -D / B
+        return C if (0.0 <= C <= S0 / sigma) else None
+
+    disc = B**2 - 4.0 * A * D
+    if disc < 0.0:
+        return None
+
+    C1 = (-B + np.sqrt(disc)) / (2.0 * A)
+    C2 = (-B - np.sqrt(disc)) / (2.0 * A)
+    valid_C = [c for c in (C1, C2) if 0.0 <= c <= 1.0 + 1e-12]
+    return valid_C[0] if valid_C else None
+
+
+def get_endemic_roots(eps1, eps2, beta0, mu=MU, alpha=ALPHA, delta=DELTA, gamma=GAMMA, sigma=SIGMA):
+    """Finds all physical endemic equilibria via 1D algebraic reduction (supports eps1 != eps2)."""
+    from scipy.optimize import brentq
+    S0 = (mu + alpha) / beta0
+
+    def residual(I):
+        C = get_C(I, eps2, S0, beta0, gamma, sigma, mu)
+        if C is None:
+            return np.nan
+        S = S0 - sigma * C
+        eps1_SI_p1 = eps1 * S * I + 1.0
+        R = ((1.0 - sigma) * beta0 * C * I + alpha * I) / (mu + eps1_SI_p1 * delta)
+        eps2_SI_p1 = eps2 * S * I + 1.0
+        dC = eps1_SI_p1 * delta * R - beta0 * C * I - (mu + eps2_SI_p1 * gamma) * C
+        return dC
+
+    I_grid = np.linspace(1e-10, 1.0, 1000)
+    res_vals = [residual(i) for i in I_grid]
+
+    roots = []
+    for k in range(len(I_grid) - 1):
+        i1, i2 = I_grid[k], I_grid[k+1]
+        r1, r2 = res_vals[k], res_vals[k+1]
+        if np.isnan(r1) or np.isnan(r2) or r1 * r2 > 0.0:
+            continue
+        try:
+            root_I = brentq(residual, i1, i2)
+            C_star = get_C(root_I, eps2, S0, beta0, gamma, sigma, mu)
+            if C_star is None:
+                continue
+            S_star = S0 - sigma * C_star
+            eps1_SI_p1 = eps1 * S_star * root_I + 1.0
+            R_star = ((1.0 - sigma) * beta0 * C_star * root_I + alpha * root_I) / (mu + eps1_SI_p1 * delta)
+            if (S_star >= -1e-12 and S_star <= 1.0 + 1e-12 and
+                    R_star >= -1e-12 and R_star <= 1.0 + 1e-12 and
+                    C_star >= -1e-12 and C_star <= 1.0 + 1e-12):
+                if not any(abs(root_I - r[1]) < 1e-6 for r in roots):
+                    roots.append((S_star, root_I, R_star, C_star))
+        except ValueError:
+            pass
+    return roots
 
 
 

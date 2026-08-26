@@ -1,0 +1,3948 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Wolfram 14.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       154,          7]
+NotebookDataLength[    158561,       3940]
+NotebookOptionsPosition[    154507,       3866]
+NotebookOutlinePosition[    154902,       3882]
+CellTagsIndexPosition[    154859,       3879]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[TextData[StyleBox["Equilibria and stability analysis for SIRCmw\n\n1. \
+Disease Free Equilibrium",
+ FontWeight->"Bold"]], "Text",
+ CellChangeTimes->{{3.99103219067242*^9, 
+  3.991032263314706*^9}},ExpressionUUID->"bcd17530-bbb2-41c2-abca-\
+528666ef8552"],
+
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", 
+  RowBox[{"(*", " ", 
+   RowBox[{"first", " ", "lets", " ", "define", " ", "the", " ", 
+    RowBox[{"model", ":"}]}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"we", " ", "are", " ", "assuming", " ", "\[Epsilon]1"}], " ", "=",
+     " ", 
+    RowBox[{"\[Epsilon]2", " ", "=", " ", "\[Epsilon]"}]}], " ", "*)"}], 
+  "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"ClearAll", "[", "\"\<Global`*\>\"", "]"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{"dS", "=", 
+     RowBox[{
+      RowBox[{"\[Mu]", "*", 
+       RowBox[{"(", 
+        RowBox[{"1", "-", "S"}], ")"}]}], "-", 
+      RowBox[{"\[Beta]", "*", "S", "*", "II"}], "+", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"1", "+", " ", 
+         RowBox[{"\[Epsilon]", "*", "S", "*", "II"}]}], ")"}], "*", 
+       "\[Gamma]", "*", "CC"}]}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"dI", "=", 
+     RowBox[{
+      RowBox[{"\[Beta]", "*", "S", "*", "II"}], "+", 
+      RowBox[{"\[Sigma]", "*", "\[Beta]", "*", "CC", "*", "II"}], "-", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"\[Mu]", "+", "\[Alpha]"}], ")"}], "*", "II"}]}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"dR", "=", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"1", "-", "\[Sigma]"}], ")"}], "*", "\[Beta]", "*", "CC", "*",
+        "II"}], "+", 
+      RowBox[{"\[Alpha]", "*", "II"}], "-", 
+      RowBox[{"\[Mu]", "*", "R"}], "-", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"1", "+", 
+         RowBox[{"\[Epsilon]", "*", "S", "*", "II"}]}], ")"}], "*", 
+       "\[Delta]", "*", "R"}]}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"dC", "=", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"1", "+", 
+         RowBox[{"\[Epsilon]", "*", "S", "*", "II"}]}], ")"}], "*", 
+       "\[Delta]", "*", "R"}], "-", 
+      RowBox[{"\[Beta]", "*", "CC", "*", "II"}], "-", 
+      RowBox[{"\[Mu]", "*", "CC"}], "-", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"1", "+", 
+         RowBox[{"\[Epsilon]", "*", "S", "*", "II"}]}], ")"}], "*", 
+       "\[Gamma]", "*", "CC"}]}]}], ";"}]}]}]], "Input",
+ CellChangeTimes->{{3.991032265369727*^9, 3.9910322863212757`*^9}, {
+  3.991032318211484*^9, 3.991032351695096*^9}, {3.991032393280307*^9, 
+  3.991032449046649*^9}, {3.991032493325345*^9, 3.9910325612125607`*^9}, {
+  3.9910326226444263`*^9, 3.991032649486858*^9}, {3.9910327178365307`*^9, 
+  3.991032720120433*^9}, {3.991036636604566*^9, 3.991036641655755*^9}, {
+  3.9910370657352657`*^9, 3.991037095995454*^9}},
+ CellLabel->"In[6]:=",ExpressionUUID->"f50e7ad5-17ed-4e57-8d89-fcdd4b2f7858"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"vars", "=", 
+     RowBox[{"{", 
+      RowBox[{"S", ",", "II", ",", "R", ",", "CC"}], "}"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"rhs", "=", 
+     RowBox[{"{", 
+      RowBox[{"dS", ",", "dI", ",", "dR", ",", "dC"}], "}"}]}], ";"}], "\n", 
+   "\n", 
+   RowBox[{"(*", 
+    RowBox[{"now", " ", "we", " ", "get", " ", "the", " ", "jacobian"}], 
+    "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"J", "=", 
+     RowBox[{
+      RowBox[{"D", "[", 
+       RowBox[{"rhs", ",", 
+        RowBox[{"{", "vars", "}"}]}], "]"}], "//", "Simplify"}]}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"and", " ", "evaluate", " ", "in", " ", "X_", "0"}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"JDFE", "=", 
+     RowBox[{
+      RowBox[{"J", "/.", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"S", "->", "1"}], ",", 
+         RowBox[{"II", "->", "0"}], ",", 
+         RowBox[{"R", "->", "0"}], ",", 
+         RowBox[{"CC", "->", "0"}]}], "}"}]}], "//", "Simplify"}]}], ";"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"Print", "[", "\"\<Jacobian at DFE:\>\"", "]"}], "\n", 
+   RowBox[{"Print", "[", 
+    RowBox[{"JDFE", "//", "MatrixForm"}], "]"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+    "now", " ", "we", " ", "compute", " ", "the", " ", "eigenvalues"}], 
+    "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"evalsDFE", "=", 
+     RowBox[{
+      RowBox[{"Eigenvalues", "[", "JDFE", "]"}], "//", "Simplify"}]}], ";"}], 
+   "\n", 
+   RowBox[{"Print", "[", "\"\<\\nEigenvalues at DFE:\>\"", "]"}], "\n", 
+   RowBox[{"Print", "[", "evalsDFE", "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.9910322462910223`*^9, 3.991032258548129*^9}, {
+  3.99103272244208*^9, 3.991032803071807*^9}, {3.991032839668844*^9, 
+  3.9910328398683577`*^9}},
+ CellLabel->"In[27]:=",ExpressionUUID->"6df9f4d9-0b38-4d43-b57a-f6c5f86e7197"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"Jacobian at DFE:\"\>"], "Print",
+ CellChangeTimes->{
+  3.9910328543719482`*^9, 3.9910361154756393`*^9, 3.991036166331336*^9, 
+   3.9910362923711452`*^9, {3.9910366543756657`*^9, 3.9910366634848547`*^9}, 
+   3.991036899213524*^9, 3.991118958963274*^9, 3.9911214066383038`*^9, 
+   3.991204518022427*^9},
+ CellLabel->
+  "During evaluation of \
+In[27]:=",ExpressionUUID->"c3c8aa62-72d9-43b0-9a2d-9ca1e03c542d"],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"(", "\[NoBreak]", GridBox[{
+     {
+      RowBox[{"-", "\[Mu]"}], 
+      RowBox[{"-", "\[Beta]"}], "0", "\[Gamma]"},
+     {"0", 
+      RowBox[{
+       RowBox[{"-", "\[Alpha]"}], "+", "\[Beta]", "-", "\[Mu]"}], "0", "0"},
+     {"0", "\[Alpha]", 
+      RowBox[{
+       RowBox[{"-", "\[Delta]"}], "-", "\[Mu]"}], "0"},
+     {"0", "0", "\[Delta]", 
+      RowBox[{
+       RowBox[{"-", "\[Gamma]"}], "-", "\[Mu]"}]}
+    },
+    GridBoxAlignment->{"Columns" -> {{Center}}, "Rows" -> {{Baseline}}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.7]}, 
+        Offset[0.27999999999999997`]}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}}], "\[NoBreak]", ")"}],
+  Function[BoxForm`e$, 
+   MatrixForm[BoxForm`e$]]]], "Print",
+ CellChangeTimes->{
+  3.9910328543719482`*^9, 3.9910361154756393`*^9, 3.991036166331336*^9, 
+   3.9910362923711452`*^9, {3.9910366543756657`*^9, 3.9910366634848547`*^9}, 
+   3.991036899213524*^9, 3.991118958963274*^9, 3.9911214066383038`*^9, 
+   3.991204518032371*^9},
+ CellLabel->
+  "During evaluation of \
+In[27]:=",ExpressionUUID->"003eb929-3f7a-4864-95b3-d94761b197e9"],
+
+Cell[BoxData["\<\"\\nEigenvalues at DFE:\"\>"], "Print",
+ CellChangeTimes->{
+  3.9910328543719482`*^9, 3.9910361154756393`*^9, 3.991036166331336*^9, 
+   3.9910362923711452`*^9, {3.9910366543756657`*^9, 3.9910366634848547`*^9}, 
+   3.991036899213524*^9, 3.991118958963274*^9, 3.9911214066383038`*^9, 
+   3.991204518033401*^9},
+ CellLabel->
+  "During evaluation of \
+In[27]:=",ExpressionUUID->"5285e900-e5a7-413e-99fa-13a14814923d"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"-", "\[Alpha]"}], "+", "\[Beta]", "-", "\[Mu]"}], ",", 
+   RowBox[{
+    RowBox[{"-", "\[Gamma]"}], "-", "\[Mu]"}], ",", 
+   RowBox[{
+    RowBox[{"-", "\[Delta]"}], "-", "\[Mu]"}], ",", 
+   RowBox[{"-", "\[Mu]"}]}], "}"}]], "Print",
+ CellChangeTimes->{
+  3.9910328543719482`*^9, 3.9910361154756393`*^9, 3.991036166331336*^9, 
+   3.9910362923711452`*^9, {3.9910366543756657`*^9, 3.9910366634848547`*^9}, 
+   3.991036899213524*^9, 3.991118958963274*^9, 3.9911214066383038`*^9, 
+   3.991204518033929*^9},
+ CellLabel->
+  "During evaluation of \
+In[27]:=",ExpressionUUID->"6417a0f8-8dc5-46f9-9da8-b6267d45aceb"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[TextData[{
+ "\n",
+ StyleBox["2. Endemic Equilibrium \n",
+  FontWeight->"Bold"]
+}], "Text",
+ CellChangeTimes->{{3.991033280158317*^9, 
+  3.9910332911358213`*^9}},ExpressionUUID->"82f7fa32-e9c8-4de0-83ea-\
+fba80a09c95e"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{
+   "we", " ", "set", " ", "all", " ", "derivatives", " ", "to", " ", "zero"}],
+    "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"eqEqs", "=", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"dS", "==", "0"}], ",", 
+       RowBox[{"dI", "==", "0"}], ",", 
+       RowBox[{"dR", "==", "0"}], ",", 
+       RowBox[{"dC", "==", "0"}]}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+    "divide", " ", "the", " ", "dI", " ", "equation", " ", "by", " ", "II", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"because", " ", "we", " ", "are", " ", "assuming", " ", "II"}],
+        "!=", 
+       RowBox[{"0", " ", "for", " ", "endemic", " ", "state"}]}], ")"}]}], 
+    "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"eqI", "=", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"\[Beta]", "*", "S"}], "+", 
+       RowBox[{"\[Sigma]", "*", "\[Beta]", "*", "CC"}]}], "==", 
+      RowBox[{"\[Mu]", "+", "\[Alpha]"}]}]}], ";"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"and", " ", "rebuild", " ", "the", " ", "system"}], "*)"}], "\n", 
+   
+   RowBox[{
+    RowBox[{"eqSystem", "=", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"dS", "==", "0"}], ",", "eqI", ",", 
+       RowBox[{"dR", "==", "0"}], ",", 
+       RowBox[{"dC", "==", "0"}]}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+     RowBox[{"eliminate", " ", "S"}], ",", "R", ",", 
+     RowBox[{
+     "and", " ", "CC", " ", "to", " ", "get", " ", "a", " ", "reduced", " ", 
+      "equation", " ", "only", " ", "in", " ", "terms", " ", "of", " ", 
+      "II"}]}], "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"reduced", "=", 
+     RowBox[{
+      RowBox[{"Eliminate", "[", 
+       RowBox[{"eqSystem", ",", 
+        RowBox[{"{", 
+         RowBox[{"S", ",", "R", ",", "CC"}], "}"}]}], "]"}], "//", 
+      "Simplify"}]}], ";"}], "\n", 
+   RowBox[{"Print", "[", "\"\<\\nReduced equation in I only:\>\"", "]"}], "\n", 
+   RowBox[{"Print", "[", "reduced", "]"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+     RowBox[{"lets", " ", "extract", " ", "the", " ", "left", " ", "side"}], 
+     "..."}], "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"poly", "=", 
+     RowBox[{"reduced", "[", 
+      RowBox[{"[", "1", "]"}], "]"}]}], ";"}], "\n", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+    "and", " ", "collect", " ", "by", " ", "powers", " ", "of", " ", "II", " ",
+      "to", " ", "see", " ", "the", " ", "degree", " ", "of", " ", "the", " ",
+      "polynomial"}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"polyI", "=", 
+     RowBox[{"Collect", "[", 
+      RowBox[{"poly", ",", "II", ",", "Simplify"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+   "Print", "[", "\"\<\\nPolynomial collected by powers of I:\>\"", "]"}], "\n", 
+   RowBox[{"Print", "[", "polyI", "]"}], "\[IndentingNewLine]"}]}]], "Input",
+ CellChangeTimes->{
+  3.9910332948993597`*^9, {3.991033479491136*^9, 3.99103351315693*^9}, {
+   3.9910335906662197`*^9, 3.9910336269708853`*^9}, {3.991033687181046*^9, 
+   3.991033720754368*^9}},
+ CellLabel->"In[36]:=",ExpressionUUID->"7baebe1e-e340-4245-acc0-21a54b5d8fe0"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"\\nReduced equation in I only:\"\>"], "Print",
+ CellChangeTimes->{3.991033642714271*^9, 3.9910337232656*^9, 
+  3.991036117592411*^9, 3.991036170088913*^9, 3.991036296343444*^9, 
+  3.9910366708951*^9, 3.991036906934305*^9, 3.9911189635741577`*^9, 
+  3.991121412054122*^9, 3.991204521494384*^9},
+ CellLabel->
+  "During evaluation of \
+In[36]:=",ExpressionUUID->"de299914-fc4f-4f8d-afd9-20e2a7392392"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"\[Mu]", " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{
+      SuperscriptBox["\[Beta]", "2"], " ", "\[Mu]", " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Alpha]", "-", "\[Beta]", "+", "\[Mu]"}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Gamma]", "+", "\[Mu]"}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Delta]", "+", "\[Mu]"}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Gamma]", "-", 
+        RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+     RowBox[{
+      SuperscriptBox["II", "4"], " ", 
+      SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+      "\[Epsilon]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", 
+          SuperscriptBox["\[Alpha]", "2"]}], " ", "\[Gamma]", " ", 
+         "\[Epsilon]"}], "-", 
+        RowBox[{"\[Gamma]", " ", "\[Epsilon]", " ", 
+         SuperscriptBox["\[Mu]", "2"]}], "+", 
+        RowBox[{"\[Alpha]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "2"}], " ", "\[Gamma]", " ", "\[Epsilon]", " ", 
+            "\[Mu]"}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Beta]", "2"], " ", "\[Sigma]"}]}], ")"}]}], "+", 
+        RowBox[{"\[Beta]", " ", "\[Sigma]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"\[Beta]", " ", "\[Mu]"}], "+", 
+           RowBox[{"\[Beta]", " ", "\[Delta]", " ", "\[Sigma]"}], "+", 
+           RowBox[{
+           "\[Delta]", " ", "\[Epsilon]", " ", "\[Mu]", " ", "\[Sigma]"}]}], 
+          ")"}]}]}], ")"}]}], "+", 
+     RowBox[{
+      SuperscriptBox["II", "3"], " ", "\[Beta]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", 
+          SuperscriptBox["\[Alpha]", "3"]}], " ", 
+         SuperscriptBox["\[Gamma]", "2"], " ", "\[Delta]", " ", 
+         SuperscriptBox["\[Epsilon]", "2"]}], "-", 
+        RowBox[{"2", " ", 
+         SuperscriptBox["\[Gamma]", "2"], " ", "\[Delta]", " ", 
+         SuperscriptBox["\[Epsilon]", "2"], " ", 
+         SuperscriptBox["\[Mu]", "3"]}], "+", 
+        RowBox[{"\[Beta]", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+         SuperscriptBox["\[Epsilon]", "2"], " ", 
+         SuperscriptBox["\[Mu]", "2"], " ", 
+         RowBox[{"(", 
+          RowBox[{"1", "+", "\[Sigma]"}], ")"}], " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Gamma]", "+", 
+           RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "4"], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Gamma]", "-", 
+           RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}], " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Mu]", "+", 
+           RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "3"], " ", "\[Delta]", " ", "\[Epsilon]", " ",
+          "\[Sigma]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"\[Gamma]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "3"}], "+", "\[Sigma]"}], ")"}]}], "-", 
+           RowBox[{"2", " ", "\[Gamma]", " ", "\[Delta]", " ", "\[Sigma]"}], "-", 
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+            "\[Sigma]"}]}], ")"}]}], "-", 
+        RowBox[{
+         SuperscriptBox["\[Alpha]", "2"], " ", "\[Gamma]", " ", "\[Epsilon]", 
+         " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "\[Beta]"}], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+            "\[Epsilon]"}], "+", 
+           RowBox[{
+           "4", " ", "\[Gamma]", " ", "\[Delta]", " ", "\[Epsilon]", " ", 
+            "\[Mu]"}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Beta]", "2"], " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Gamma]", "+", "\[Delta]", "-", 
+              RowBox[{"2", " ", "\[Delta]", " ", "\[Sigma]"}]}], ")"}]}]}], 
+          ")"}]}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Epsilon]", " ",
+          "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "\[Gamma]"}], " ", "\[Mu]"}], "+", 
+           RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", 
+              RowBox[{"4", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+            RowBox[{"(", 
+             RowBox[{"1", "-", 
+              RowBox[{"2", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "1"}], "+", "\[Epsilon]"}], ")"}], " ", 
+               "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+        RowBox[{"\[Alpha]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "5"}], " ", 
+            SuperscriptBox["\[Gamma]", "2"], " ", "\[Delta]", " ", 
+            SuperscriptBox["\[Epsilon]", "2"], " ", 
+            SuperscriptBox["\[Mu]", "2"]}], "-", 
+           RowBox[{
+            SuperscriptBox["\[Beta]", "3"], " ", "\[Gamma]", " ", "\[Delta]", 
+            " ", "\[Epsilon]", " ", "\[Sigma]"}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Beta]", "4"], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Gamma]", "-", 
+              RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+           RowBox[{"\[Beta]", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+            SuperscriptBox["\[Epsilon]", "2"], " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"\[Delta]", " ", "\[Sigma]", " ", 
+               RowBox[{"(", 
+                RowBox[{"1", "+", "\[Sigma]"}], ")"}]}], "+", 
+              RowBox[{"\[Gamma]", " ", 
+               RowBox[{"(", 
+                RowBox[{"2", "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", 
+            "\[Epsilon]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"-", "2"}], " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+              RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+              RowBox[{
+               SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+               RowBox[{"(", 
+                RowBox[{"1", "+", "\[Sigma]"}], ")"}]}], "+", 
+              RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "2"}], "+", 
+                 RowBox[{"6", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}]}], 
+          ")"}]}]}], ")"}]}], "-", 
+     RowBox[{"II", " ", "\[Beta]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         SuperscriptBox["\[Beta]", "3"], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Gamma]", "-", 
+           RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"\[Gamma]", " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Delta]", "+", "\[Mu]"}], ")"}]}], "+", 
+           RowBox[{"\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Delta]", "+", 
+              RowBox[{"2", " ", "\[Mu]"}], "+", 
+              RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Alpha]", "2"], " ", "\[Gamma]", " ", "\[Epsilon]", 
+         " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"\[Gamma]", " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Mu]", "-", 
+              RowBox[{"\[Delta]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], "+", 
+           RowBox[{"\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Mu]", "-", 
+              RowBox[{"\[Delta]", " ", "\[Sigma]"}], "-", 
+              RowBox[{"2", " ", "\[Mu]", " ", "\[Sigma]"}]}], ")"}]}]}], 
+          ")"}]}], "+", 
+        RowBox[{"\[Gamma]", " ", "\[Epsilon]", " ", 
+         SuperscriptBox["\[Mu]", "3"], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"\[Gamma]", " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Mu]", "-", 
+              RowBox[{"\[Delta]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], "+", 
+           RowBox[{"\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Mu]", "-", 
+              RowBox[{"\[Delta]", " ", "\[Sigma]"}], "-", 
+              RowBox[{"2", " ", "\[Mu]", " ", "\[Sigma]"}]}], ")"}]}]}], 
+          ")"}]}], "-", 
+        RowBox[{"\[Beta]", " ", "\[Epsilon]", " ", 
+         SuperscriptBox["\[Mu]", "2"], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", 
+             SuperscriptBox["\[Delta]", "2"]}], " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", "\[Sigma]"}],
+            "+", 
+           RowBox[{
+            SuperscriptBox["\[Gamma]", "2"], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"2", " ", "\[Delta]"}], "+", "\[Mu]", "+", 
+              RowBox[{"\[Mu]", " ", "\[Sigma]"}]}], ")"}]}], "-", 
+           RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"2", " ", "\[Delta]", " ", 
+               SuperscriptBox["\[Sigma]", "2"]}], "+", 
+              RowBox[{"\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "1"}], "+", 
+                 RowBox[{"2", " ", "\[Sigma]"}], "+", 
+                 SuperscriptBox["\[Sigma]", "2"]}], ")"}]}]}], ")"}]}]}], 
+          ")"}]}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "2"], " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            SuperscriptBox["\[Gamma]", "2"], " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Delta]", "+", "\[Mu]"}], ")"}], " ", 
+            RowBox[{"(", 
+             RowBox[{"2", "+", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "2"}], "+", "\[Epsilon]"}], ")"}], " ", 
+               "\[Sigma]"}]}], ")"}]}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", "\[Sigma]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"3", " ", "\[Mu]"}], "+", 
+              RowBox[{"\[Delta]", " ", 
+               RowBox[{"(", 
+                RowBox[{"2", "-", "\[Epsilon]", "+", "\[Sigma]"}], ")"}]}]}], 
+             ")"}]}], "+", 
+           RowBox[{"\[Gamma]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"-", "3"}], " ", 
+               SuperscriptBox["\[Mu]", "2"], " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+              RowBox[{
+               SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "2"}], "+", "\[Epsilon]", "+", 
+                 RowBox[{"2", " ", "\[Sigma]"}], "-", 
+                 RowBox[{"2", " ", "\[Epsilon]", " ", "\[Sigma]"}]}], ")"}]}],
+               "+", 
+              RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{"2", "-", 
+                 RowBox[{"3", " ", "\[Sigma]"}], "-", 
+                 RowBox[{
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", "1"}], "+", "\[Epsilon]"}], ")"}], " ", 
+                  SuperscriptBox["\[Sigma]", "2"]}]}], ")"}]}]}], ")"}]}]}], 
+          ")"}]}], "-", 
+        RowBox[{"\[Alpha]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            SuperscriptBox["\[Beta]", "2"], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"\[Gamma]", " ", 
+               RowBox[{"(", 
+                RowBox[{"\[Delta]", "+", 
+                 RowBox[{"2", " ", "\[Mu]"}]}], ")"}]}], "+", 
+              RowBox[{"\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"2", " ", "\[Delta]"}], "+", 
+                 RowBox[{"3", " ", "\[Mu]"}]}], ")"}]}]}], ")"}], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Gamma]", "-", 
+              RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+           RowBox[{"2", " ", "\[Gamma]", " ", "\[Epsilon]", " ", 
+            SuperscriptBox["\[Mu]", "2"], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"-", "\[Gamma]"}], " ", "\[Mu]"}], "+", 
+              RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+              RowBox[{
+               SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]"}], "+", 
+              RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "1"}], "+", 
+                 RowBox[{"2", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+           RowBox[{"\[Beta]", " ", "\[Epsilon]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"-", 
+                SuperscriptBox["\[Delta]", "2"]}], " ", "\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+               "\[Sigma]"}], "+", 
+              RowBox[{
+               SuperscriptBox["\[Gamma]", "2"], " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"2", " ", "\[Delta]"}], "+", "\[Mu]", "+", 
+                 RowBox[{"\[Mu]", " ", "\[Sigma]"}]}], ")"}]}], "-", 
+              RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"2", " ", "\[Delta]", " ", 
+                  SuperscriptBox["\[Sigma]", "2"]}], "+", 
+                 RowBox[{"\[Mu]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", "1"}], "+", 
+                    RowBox[{"2", " ", "\[Sigma]"}], "+", 
+                    SuperscriptBox["\[Sigma]", "2"]}], ")"}]}]}], ")"}]}]}], 
+             ")"}]}]}], ")"}]}]}], ")"}]}], "+", 
+     RowBox[{
+      SuperscriptBox["II", "2"], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", 
+          SuperscriptBox["\[Alpha]", "3"]}], " ", 
+         SuperscriptBox["\[Gamma]", "2"], " ", "\[Delta]", " ", 
+         SuperscriptBox["\[Epsilon]", "2"], " ", "\[Mu]"}], "-", 
+        RowBox[{
+         SuperscriptBox["\[Gamma]", "2"], " ", "\[Delta]", " ", 
+         SuperscriptBox["\[Epsilon]", "2"], " ", 
+         SuperscriptBox["\[Mu]", "4"]}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "5"], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "\[Gamma]"}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}], " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Mu]", "+", 
+           RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+        RowBox[{"\[Beta]", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+         SuperscriptBox["\[Epsilon]", "2"], " ", 
+         SuperscriptBox["\[Mu]", "3"], " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Gamma]", "+", 
+           RowBox[{"\[Gamma]", " ", "\[Sigma]"}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "-", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Epsilon]", " ", 
+         SuperscriptBox["\[Mu]", "2"], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"2", " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{"2", "-", 
+              RowBox[{"5", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+           RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{"4", "+", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "2"}], "+", "\[Epsilon]"}], ")"}], " ", 
+               "\[Sigma]"}]}], ")"}]}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Epsilon]", "-", "\[Sigma]", "+", 
+              RowBox[{"\[Epsilon]", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "3"], " ", "\[Epsilon]", " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            SuperscriptBox["\[Gamma]", "2"], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"2", " ", "\[Delta]"}], "+", "\[Mu]", "+", 
+              RowBox[{"\[Mu]", " ", "\[Sigma]"}]}], ")"}]}], "-", 
+           RowBox[{
+            SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", "\[Sigma]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", 
+              SuperscriptBox["\[Sigma]", "2"]}], ")"}]}], "+", 
+           RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Mu]", "-", 
+              RowBox[{"5", " ", "\[Mu]", " ", "\[Sigma]"}], "+", 
+              RowBox[{"\[Delta]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "4"}], "+", "\[Epsilon]"}], ")"}], " ", 
+               SuperscriptBox["\[Sigma]", "2"]}]}], ")"}]}]}], ")"}]}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Alpha]", "2"], " ", "\[Gamma]", " ", "\[Epsilon]", 
+         " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "3"}], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+            "\[Epsilon]", " ", 
+            SuperscriptBox["\[Mu]", "2"]}], "+", 
+           RowBox[{
+           "\[Beta]", " ", "\[Delta]", " ", "\[Epsilon]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Gamma]", "+", 
+              RowBox[{"\[Gamma]", " ", "\[Sigma]"}], "+", 
+              RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Beta]", "2"], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"-", "2"}], " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+              RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+              RowBox[{
+               SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]"}], "+", 
+              RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "2"}], "+", 
+                 RowBox[{"4", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}]}], 
+          ")"}]}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "4"], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            SuperscriptBox["\[Gamma]", "2"], " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Delta]", "+", "\[Mu]"}], ")"}], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", "\[Sigma]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"-", "3"}], " ", "\[Mu]"}], "+", 
+              RowBox[{"\[Delta]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "1"}], "+", 
+                 RowBox[{
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Epsilon]"}], ")"}], " ", 
+                  "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+           RowBox[{"\[Gamma]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"3", " ", 
+               SuperscriptBox["\[Mu]", "2"], " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+              RowBox[{
+               SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+               RowBox[{"(", 
+                RowBox[{"1", "+", 
+                 RowBox[{
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", "1"}], "+", "\[Epsilon]"}], ")"}], " ", 
+                  "\[Sigma]"}]}], ")"}]}], "-", 
+              RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{"1", "+", 
+                 RowBox[{"\[Epsilon]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}], " ", 
+                  "\[Sigma]"}], "-", 
+                 SuperscriptBox["\[Sigma]", "2"]}], ")"}]}]}], ")"}]}]}], 
+          ")"}]}], "+", 
+        RowBox[{"\[Alpha]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "3"}], " ", 
+            SuperscriptBox["\[Gamma]", "2"], " ", "\[Delta]", " ", 
+            SuperscriptBox["\[Epsilon]", "2"], " ", 
+            SuperscriptBox["\[Mu]", "3"]}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Beta]", "4"], " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Gamma]", "+", "\[Delta]", "+", 
+              RowBox[{"3", " ", "\[Mu]"}]}], ")"}], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Gamma]", "-", 
+              RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+           RowBox[{"2", " ", "\[Beta]", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+            SuperscriptBox["\[Epsilon]", "2"], " ", 
+            SuperscriptBox["\[Mu]", "2"], " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Gamma]", "+", 
+              RowBox[{"\[Gamma]", " ", "\[Sigma]"}], "+", 
+              RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "-", 
+           RowBox[{
+            SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", 
+            "\[Epsilon]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"4", " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+              RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{"4", "-", 
+                 RowBox[{"9", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+              RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+               RowBox[{"(", 
+                RowBox[{"6", "+", 
+                 RowBox[{
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", "3"}], "+", "\[Epsilon]"}], ")"}], " ", 
+                  "\[Sigma]"}]}], ")"}]}], "+", 
+              RowBox[{
+               SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "3"}], "+", "\[Epsilon]", "-", "\[Sigma]", "+", 
+                 
+                 RowBox[{"\[Epsilon]", " ", "\[Sigma]"}]}], ")"}]}]}], 
+             ")"}]}], "-", 
+           RowBox[{
+            SuperscriptBox["\[Beta]", "3"], " ", "\[Epsilon]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+               "\[Sigma]"}], "+", 
+              RowBox[{
+               SuperscriptBox["\[Gamma]", "2"], " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"\[Delta]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "-", 
+                 RowBox[{"\[Mu]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{"1", "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], "+", 
+              RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"\[Delta]", " ", "\[Sigma]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{"1", "+", "\[Sigma]"}], ")"}]}], "+", 
+                 RowBox[{"\[Mu]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", "1"}], "+", 
+                    RowBox[{"3", " ", "\[Sigma]"}], "+", 
+                    SuperscriptBox["\[Sigma]", "2"]}], ")"}]}]}], ")"}]}]}], 
+             ")"}]}]}], ")"}]}]}], ")"}]}]}], ")"}]}], "\[Equal]", 
+  "0"}]], "Print",
+ CellChangeTimes->{3.991033642714271*^9, 3.9910337232656*^9, 
+  3.991036117592411*^9, 3.991036170088913*^9, 3.991036296343444*^9, 
+  3.9910366708951*^9, 3.991036906934305*^9, 3.9911189635741577`*^9, 
+  3.991121412054122*^9, 3.991204521497676*^9},
+ CellLabel->
+  "During evaluation of \
+In[36]:=",ExpressionUUID->"66bc5a01-efaa-4602-9f6d-25e57813fb24"],
+
+Cell[BoxData["\<\"\\nPolynomial collected by powers of I:\"\>"], "Print",
+ CellChangeTimes->{3.991033642714271*^9, 3.9910337232656*^9, 
+  3.991036117592411*^9, 3.991036170088913*^9, 3.991036296343444*^9, 
+  3.9910366708951*^9, 3.991036906934305*^9, 3.9911189635741577`*^9, 
+  3.991121412054122*^9, 3.9912045215253363`*^9},
+ CellLabel->
+  "During evaluation of \
+In[36]:=",ExpressionUUID->"8297533a-beed-453a-b663-045c683102a6"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"], " ", 
+   RowBox[{"(", 
+    RowBox[{"\[Alpha]", "-", "\[Beta]", "+", "\[Mu]"}], ")"}], " ", 
+   RowBox[{"(", 
+    RowBox[{"\[Gamma]", "+", "\[Mu]"}], ")"}], " ", 
+   RowBox[{"(", 
+    RowBox[{"\[Delta]", "+", "\[Mu]"}], ")"}], " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+   RowBox[{"(", 
+    RowBox[{"\[Gamma]", "-", 
+     RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+  RowBox[{
+   SuperscriptBox["II", "4"], " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   "\[Epsilon]", " ", "\[Mu]", " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"-", 
+       SuperscriptBox["\[Alpha]", "2"]}], " ", "\[Gamma]", " ", 
+      "\[Epsilon]"}], "-", 
+     RowBox[{"\[Gamma]", " ", "\[Epsilon]", " ", 
+      SuperscriptBox["\[Mu]", "2"]}], "+", 
+     RowBox[{"\[Alpha]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "2"}], " ", "\[Gamma]", " ", "\[Epsilon]", " ", 
+         "\[Mu]"}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "2"], " ", "\[Sigma]"}]}], ")"}]}], "+", 
+     RowBox[{"\[Beta]", " ", "\[Sigma]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"\[Beta]", " ", "\[Mu]"}], "+", 
+        RowBox[{"\[Beta]", " ", "\[Delta]", " ", "\[Sigma]"}], "+", 
+        RowBox[{
+        "\[Delta]", " ", "\[Epsilon]", " ", "\[Mu]", " ", "\[Sigma]"}]}], 
+       ")"}]}]}], ")"}]}], "+", 
+  RowBox[{
+   SuperscriptBox["II", "3"], " ", "\[Beta]", " ", "\[Mu]", " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"-", 
+       SuperscriptBox["\[Alpha]", "3"]}], " ", 
+      SuperscriptBox["\[Gamma]", "2"], " ", "\[Delta]", " ", 
+      SuperscriptBox["\[Epsilon]", "2"]}], "-", 
+     RowBox[{"2", " ", 
+      SuperscriptBox["\[Gamma]", "2"], " ", "\[Delta]", " ", 
+      SuperscriptBox["\[Epsilon]", "2"], " ", 
+      SuperscriptBox["\[Mu]", "3"]}], "+", 
+     RowBox[{"\[Beta]", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+      SuperscriptBox["\[Epsilon]", "2"], " ", 
+      SuperscriptBox["\[Mu]", "2"], " ", 
+      RowBox[{"(", 
+       RowBox[{"1", "+", "\[Sigma]"}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Gamma]", "+", 
+        RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+     RowBox[{
+      SuperscriptBox["\[Beta]", "4"], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Gamma]", "-", 
+        RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Mu]", "+", 
+        RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+     RowBox[{
+      SuperscriptBox["\[Beta]", "3"], " ", "\[Delta]", " ", "\[Epsilon]", " ",
+       "\[Sigma]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"\[Gamma]", " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "3"}], "+", "\[Sigma]"}], ")"}]}], "-", 
+        RowBox[{"2", " ", "\[Gamma]", " ", "\[Delta]", " ", "\[Sigma]"}], "-", 
+        RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", "\[Sigma]"}]}], 
+       ")"}]}], "-", 
+     RowBox[{
+      SuperscriptBox["\[Alpha]", "2"], " ", "\[Gamma]", " ", "\[Epsilon]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "\[Beta]"}], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+         "\[Epsilon]"}], "+", 
+        RowBox[{
+        "4", " ", "\[Gamma]", " ", "\[Delta]", " ", "\[Epsilon]", " ", 
+         "\[Mu]"}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "2"], " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Gamma]", "+", "\[Delta]", "-", 
+           RowBox[{"2", " ", "\[Delta]", " ", "\[Sigma]"}]}], ")"}]}]}], 
+       ")"}]}], "+", 
+     RowBox[{
+      SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Epsilon]", " ",
+       "\[Mu]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "\[Gamma]"}], " ", "\[Mu]"}], "+", 
+        RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+        RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", 
+           RowBox[{"4", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+         RowBox[{"(", 
+          RowBox[{"1", "-", 
+           RowBox[{"2", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Epsilon]"}], ")"}], " ", 
+            "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+     RowBox[{"\[Alpha]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "5"}], " ", 
+         SuperscriptBox["\[Gamma]", "2"], " ", "\[Delta]", " ", 
+         SuperscriptBox["\[Epsilon]", "2"], " ", 
+         SuperscriptBox["\[Mu]", "2"]}], "-", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "3"], " ", "\[Gamma]", " ", "\[Delta]", " ",
+          "\[Epsilon]", " ", "\[Sigma]"}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "4"], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Gamma]", "-", 
+           RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+        RowBox[{"\[Beta]", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+         SuperscriptBox["\[Epsilon]", "2"], " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"\[Delta]", " ", "\[Sigma]", " ", 
+            RowBox[{"(", 
+             RowBox[{"1", "+", "\[Sigma]"}], ")"}]}], "+", 
+           RowBox[{"\[Gamma]", " ", 
+            RowBox[{"(", 
+             RowBox[{"2", "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Epsilon]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "2"}], " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+           RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+            RowBox[{"(", 
+             RowBox[{"1", "+", "\[Sigma]"}], ")"}]}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", 
+              RowBox[{"6", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}]}], 
+       ")"}]}]}], ")"}]}], "-", 
+  RowBox[{"II", " ", "\[Beta]", " ", "\[Mu]", " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{
+      SuperscriptBox["\[Beta]", "3"], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Gamma]", "-", 
+        RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"\[Gamma]", " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Delta]", "+", "\[Mu]"}], ")"}]}], "+", 
+        RowBox[{"\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Delta]", "+", 
+           RowBox[{"2", " ", "\[Mu]"}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+     RowBox[{
+      SuperscriptBox["\[Alpha]", "2"], " ", "\[Gamma]", " ", "\[Epsilon]", " ",
+       "\[Mu]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"\[Gamma]", " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Mu]", "-", 
+           RowBox[{"\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], "+", 
+        
+        RowBox[{"\[Delta]", " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Mu]", "-", 
+           RowBox[{"\[Delta]", " ", "\[Sigma]"}], "-", 
+           RowBox[{"2", " ", "\[Mu]", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}],
+      "+", 
+     RowBox[{"\[Gamma]", " ", "\[Epsilon]", " ", 
+      SuperscriptBox["\[Mu]", "3"], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"\[Gamma]", " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Mu]", "-", 
+           RowBox[{"\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], "+", 
+        
+        RowBox[{"\[Delta]", " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Mu]", "-", 
+           RowBox[{"\[Delta]", " ", "\[Sigma]"}], "-", 
+           RowBox[{"2", " ", "\[Mu]", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}],
+      "-", 
+     RowBox[{"\[Beta]", " ", "\[Epsilon]", " ", 
+      SuperscriptBox["\[Mu]", "2"], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", 
+          SuperscriptBox["\[Delta]", "2"]}], " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", "\[Sigma]"}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Gamma]", "2"], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"2", " ", "\[Delta]"}], "+", "\[Mu]", "+", 
+           RowBox[{"\[Mu]", " ", "\[Sigma]"}]}], ")"}]}], "-", 
+        RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"2", " ", "\[Delta]", " ", 
+            SuperscriptBox["\[Sigma]", "2"]}], "+", 
+           RowBox[{"\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", 
+              RowBox[{"2", " ", "\[Sigma]"}], "+", 
+              SuperscriptBox["\[Sigma]", "2"]}], ")"}]}]}], ")"}]}]}], 
+       ")"}]}], "+", 
+     RowBox[{
+      SuperscriptBox["\[Beta]", "2"], " ", "\[Mu]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         SuperscriptBox["\[Gamma]", "2"], " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Delta]", "+", "\[Mu]"}], ")"}], " ", 
+         RowBox[{"(", 
+          RowBox[{"2", "+", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Epsilon]"}], ")"}], " ", 
+            "\[Sigma]"}]}], ")"}]}], "+", 
+        RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", "\[Sigma]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"3", " ", "\[Mu]"}], "+", 
+           RowBox[{"\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{"2", "-", "\[Epsilon]", "+", "\[Sigma]"}], ")"}]}]}], 
+          ")"}]}], "+", 
+        RowBox[{"\[Gamma]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "3"}], " ", 
+            SuperscriptBox["\[Mu]", "2"], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Epsilon]", "+", 
+              RowBox[{"2", " ", "\[Sigma]"}], "-", 
+              RowBox[{"2", " ", "\[Epsilon]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{"2", "-", 
+              RowBox[{"3", " ", "\[Sigma]"}], "-", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "1"}], "+", "\[Epsilon]"}], ")"}], " ", 
+               SuperscriptBox["\[Sigma]", "2"]}]}], ")"}]}]}], ")"}]}]}], 
+       ")"}]}], "-", 
+     RowBox[{"\[Alpha]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         SuperscriptBox["\[Beta]", "2"], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"\[Gamma]", " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Delta]", "+", 
+              RowBox[{"2", " ", "\[Mu]"}]}], ")"}]}], "+", 
+           RowBox[{"\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"2", " ", "\[Delta]"}], "+", 
+              RowBox[{"3", " ", "\[Mu]"}]}], ")"}]}]}], ")"}], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Gamma]", "-", 
+           RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+        RowBox[{"2", " ", "\[Gamma]", " ", "\[Epsilon]", " ", 
+         SuperscriptBox["\[Mu]", "2"], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "\[Gamma]"}], " ", "\[Mu]"}], "+", 
+           RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]"}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", 
+              RowBox[{"2", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+        RowBox[{"\[Beta]", " ", "\[Epsilon]", " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", 
+             SuperscriptBox["\[Delta]", "2"]}], " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", "\[Sigma]"}],
+            "+", 
+           RowBox[{
+            SuperscriptBox["\[Gamma]", "2"], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"2", " ", "\[Delta]"}], "+", "\[Mu]", "+", 
+              RowBox[{"\[Mu]", " ", "\[Sigma]"}]}], ")"}]}], "-", 
+           RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"2", " ", "\[Delta]", " ", 
+               SuperscriptBox["\[Sigma]", "2"]}], "+", 
+              RowBox[{"\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "1"}], "+", 
+                 RowBox[{"2", " ", "\[Sigma]"}], "+", 
+                 SuperscriptBox["\[Sigma]", "2"]}], ")"}]}]}], ")"}]}]}], 
+          ")"}]}]}], ")"}]}]}], ")"}]}], "+", 
+  RowBox[{
+   SuperscriptBox["II", "2"], " ", "\[Mu]", " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"-", 
+       SuperscriptBox["\[Alpha]", "3"]}], " ", 
+      SuperscriptBox["\[Gamma]", "2"], " ", "\[Delta]", " ", 
+      SuperscriptBox["\[Epsilon]", "2"], " ", "\[Mu]"}], "-", 
+     RowBox[{
+      SuperscriptBox["\[Gamma]", "2"], " ", "\[Delta]", " ", 
+      SuperscriptBox["\[Epsilon]", "2"], " ", 
+      SuperscriptBox["\[Mu]", "4"]}], "+", 
+     RowBox[{
+      SuperscriptBox["\[Beta]", "5"], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "\[Gamma]"}], "+", 
+        RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Mu]", "+", 
+        RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+     RowBox[{"\[Beta]", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+      SuperscriptBox["\[Epsilon]", "2"], " ", 
+      SuperscriptBox["\[Mu]", "3"], " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Gamma]", "+", 
+        RowBox[{"\[Gamma]", " ", "\[Sigma]"}], "+", 
+        RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "-", 
+     RowBox[{
+      SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Epsilon]", " ", 
+      SuperscriptBox["\[Mu]", "2"], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"2", " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+        RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{"2", "-", 
+           RowBox[{"5", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+        RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+         RowBox[{"(", 
+          RowBox[{"4", "+", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Epsilon]"}], ")"}], " ", 
+            "\[Sigma]"}]}], ")"}]}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "2"}], "+", "\[Epsilon]", "-", "\[Sigma]", "+", 
+           RowBox[{"\[Epsilon]", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+     RowBox[{
+      SuperscriptBox["\[Beta]", "3"], " ", "\[Epsilon]", " ", "\[Mu]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         SuperscriptBox["\[Gamma]", "2"], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"2", " ", "\[Delta]"}], "+", "\[Mu]", "+", 
+           RowBox[{"\[Mu]", " ", "\[Sigma]"}]}], ")"}]}], "-", 
+        RowBox[{
+         SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", "\[Sigma]", " ", 
+         
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", 
+           SuperscriptBox["\[Sigma]", "2"]}], ")"}]}], "+", 
+        RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Mu]", "-", 
+           RowBox[{"5", " ", "\[Mu]", " ", "\[Sigma]"}], "+", 
+           RowBox[{"\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "4"}], "+", "\[Epsilon]"}], ")"}], " ", 
+            SuperscriptBox["\[Sigma]", "2"]}]}], ")"}]}]}], ")"}]}], "+", 
+     RowBox[{
+      SuperscriptBox["\[Alpha]", "2"], " ", "\[Gamma]", " ", "\[Epsilon]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "3"}], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+         "\[Epsilon]", " ", 
+         SuperscriptBox["\[Mu]", "2"]}], "+", 
+        RowBox[{"\[Beta]", " ", "\[Delta]", " ", "\[Epsilon]", " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Gamma]", "+", 
+           RowBox[{"\[Gamma]", " ", "\[Sigma]"}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "2"], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "2"}], " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+           RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]"}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", 
+              RowBox[{"4", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}]}], ")"}]}],
+      "+", 
+     RowBox[{
+      SuperscriptBox["\[Beta]", "4"], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         SuperscriptBox["\[Gamma]", "2"], " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Delta]", "+", "\[Mu]"}], ")"}], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+        RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", "\[Sigma]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "3"}], " ", "\[Mu]"}], "+", 
+           RowBox[{"\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "2"}], "+", "\[Epsilon]"}], ")"}], " ", 
+               "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+        RowBox[{"\[Gamma]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"3", " ", 
+            SuperscriptBox["\[Mu]", "2"], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+            RowBox[{"(", 
+             RowBox[{"1", "+", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "1"}], "+", "\[Epsilon]"}], ")"}], " ", 
+               "\[Sigma]"}]}], ")"}]}], "-", 
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{"1", "+", 
+              RowBox[{"\[Epsilon]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}], " ", 
+               "\[Sigma]"}], "-", 
+              SuperscriptBox["\[Sigma]", "2"]}], ")"}]}]}], ")"}]}]}], 
+       ")"}]}], "+", 
+     RowBox[{"\[Alpha]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "3"}], " ", 
+         SuperscriptBox["\[Gamma]", "2"], " ", "\[Delta]", " ", 
+         SuperscriptBox["\[Epsilon]", "2"], " ", 
+         SuperscriptBox["\[Mu]", "3"]}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "4"], " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Gamma]", "+", "\[Delta]", "+", 
+           RowBox[{"3", " ", "\[Mu]"}]}], ")"}], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Gamma]", "-", 
+           RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+        RowBox[{"2", " ", "\[Beta]", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+         SuperscriptBox["\[Epsilon]", "2"], " ", 
+         SuperscriptBox["\[Mu]", "2"], " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Gamma]", "+", 
+           RowBox[{"\[Gamma]", " ", "\[Sigma]"}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "-", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Epsilon]", " ",
+          "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"4", " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{"4", "-", 
+              RowBox[{"9", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+           RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{"6", "+", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "3"}], "+", "\[Epsilon]"}], ")"}], " ", 
+               "\[Sigma]"}]}], ")"}]}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "3"}], "+", "\[Epsilon]", "-", "\[Sigma]", "+", 
+              RowBox[{"\[Epsilon]", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "-", 
+        RowBox[{
+         SuperscriptBox["\[Beta]", "3"], " ", "\[Epsilon]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", "\[Sigma]"}],
+            "+", 
+           RowBox[{
+            SuperscriptBox["\[Gamma]", "2"], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"\[Delta]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "-", 
+              RowBox[{"\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{"1", "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], "+", 
+           RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"\[Delta]", " ", "\[Sigma]", " ", 
+               RowBox[{"(", 
+                RowBox[{"1", "+", "\[Sigma]"}], ")"}]}], "+", 
+              RowBox[{"\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "1"}], "+", 
+                 RowBox[{"3", " ", "\[Sigma]"}], "+", 
+                 SuperscriptBox["\[Sigma]", "2"]}], ")"}]}]}], ")"}]}]}], 
+          ")"}]}]}], ")"}]}]}], ")"}]}]}]], "Print",
+ CellChangeTimes->{3.991033642714271*^9, 3.9910337232656*^9, 
+  3.991036117592411*^9, 3.991036170088913*^9, 3.991036296343444*^9, 
+  3.9910366708951*^9, 3.991036906934305*^9, 3.9911189635741577`*^9, 
+  3.991121412054122*^9, 3.991204521529501*^9},
+ CellLabel->
+  "During evaluation of \
+In[36]:=",ExpressionUUID->"6e5d2e16-206e-4490-a626-0d969c2785b5"]
+}, Open  ]]
+}, Open  ]],
+
+Cell["\<\
+
+this is a very complicated 4th degree polynomial. lets try setting all \
+parameters except epsilon to a fixed realistic value ?\
+\>", "Text",
+ CellChangeTimes->{{3.9910357553719177`*^9, 3.991035777405314*^9}, {
+   3.9910369414754963`*^9, 3.991036941927368*^9}, 3.99120317766291*^9, {
+   3.991727107238759*^9, 
+   3.991727117278449*^9}},ExpressionUUID->"a19e0bf1-2eb4-447d-a14c-\
+12e985c0bce5"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "realistic", " ", "values", " ", "from", " ", "the", " ", "paper"}], 
+   "*)"}], " ", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"params", "=", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"\[Beta]", "->", "600"}], ",", 
+       RowBox[{"\[Alpha]", "->", 
+        RowBox[{"365", "/", "3"}]}], ",", 
+       RowBox[{"\[Mu]", "->", "0.02"}], ",", 
+       RowBox[{"\[Gamma]", "->", "0.35"}], ",", 
+       RowBox[{"\[Delta]", "->", 
+        RowBox[{"1", "/", "1.61"}]}], ",", 
+       RowBox[{"\[Sigma]", "->", "0.07874"}]}], "}"}]}], ";"}], " ", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"evaluatedPoly", "=", 
+     RowBox[{
+      RowBox[{"polyI", "/.", " ", "params"}], "//", "Simplify"}]}], ";"}], 
+   "\[IndentingNewLine]", "\n", 
+   RowBox[{"Print", "[", "\"\<\\nEvaluated Polynomial:\>\"", "]"}], "\n", 
+   RowBox[{"Print", "[", "evaluatedPoly", "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.991035778543112*^9, 3.991035938201255*^9}, {
+   3.991036210200591*^9, 3.991036280631091*^9}, 3.991036381577117*^9, 
+   3.9910366937468033`*^9, {3.991036959783572*^9, 3.991036971831689*^9}, {
+   3.991037030804449*^9, 3.991037045384757*^9}, {3.991037648276185*^9, 
+   3.991037659217429*^9}, 3.991037692758161*^9, 3.991207440464745*^9},
+ CellLabel->
+  "In[167]:=",ExpressionUUID->"e808e522-8be4-4448-a11a-21f15da6861f"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"\\nEvaluated Polynomial:\"\>"], "Print",
+ CellChangeTimes->{3.991207446799872*^9},
+ CellLabel->
+  "During evaluation of \
+In[167]:=",ExpressionUUID->"bac0e653-98b9-4039-bbd4-d5620699f131"],
+
+Cell[BoxData[
+ RowBox[{"4532.082406224097`", "\[VeryThinSpace]", "+", 
+  RowBox[{
+   SuperscriptBox["II", "4"], " ", 
+   RowBox[{"(", 
+    RowBox[{"5.401197799248609`*^9", "-", 
+     RowBox[{"8.111941801775768`*^6", " ", "\[Epsilon]"}]}], ")"}], " ", 
+   "\[Epsilon]"}], "+", 
+  RowBox[{"II", " ", 
+   RowBox[{"(", 
+    RowBox[{"1.3399931895191601`*^8", "+", 
+     RowBox[{"899.3072819088543`", " ", "\[Epsilon]"}]}], ")"}]}], "+", 
+  RowBox[{
+   SuperscriptBox["II", "2"], " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"-", "6.064511115009222`*^10"}], "+", 
+     RowBox[{"6.223635859927519`*^7", " ", "\[Epsilon]"}], "+", 
+     RowBox[{"41.01370375551395`", " ", 
+      SuperscriptBox["\[Epsilon]", "2"]}]}], ")"}]}], "+", 
+  RowBox[{
+   SuperscriptBox["II", "3"], " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"-", "5.251542317653532`*^13"}], "-", 
+     RowBox[{"2.5027965420643887`*^10", " ", "\[Epsilon]"}], "+", 
+     RowBox[{"6.466698423777016`*^6", " ", 
+      SuperscriptBox["\[Epsilon]", "2"]}]}], ")"}]}]}]], "Print",
+ CellChangeTimes->{3.9912074468031807`*^9},
+ CellLabel->
+  "During evaluation of \
+In[167]:=",ExpressionUUID->"4c1c7b63-fb25-4833-90de-d2728efdcda8"]
+}, Open  ]]
+}, Open  ]],
+
+Cell["", "Text",
+ CellChangeTimes->{{3.991037556323101*^9, 
+  3.991037571482525*^9}},ExpressionUUID->"dc7adfba-01f4-4739-80d9-\
+8d7f78b59bd3"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{
+   "lets", " ", "define", " ", "the", " ", "evaluated", " ", "polynomial", " ",
+     "as", " ", "a", " ", "function", " ", "of", " ", "II", " ", "and", " ", 
+    "eps"}], "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"P", "[", 
+      RowBox[{"II_", ",", "\[Epsilon]_"}], "]"}], ":=", 
+     RowBox[{"4532.08", "+", 
+      RowBox[{
+       RowBox[{"II", "^", "4"}], " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"5.4012", "*", 
+          RowBox[{"10", "^", "9"}]}], "-", 
+         RowBox[{"8.11194", "*", 
+          RowBox[{"10", "^", "6"}], " ", "\[Epsilon]"}]}], ")"}], " ", 
+       "\[Epsilon]"}], "+", 
+      RowBox[{"II", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"1.33999", "*", 
+          RowBox[{"10", "^", "8"}]}], "+", 
+         RowBox[{"899.307", " ", "\[Epsilon]"}]}], ")"}]}], "+", 
+      RowBox[{
+       RowBox[{"II", "^", "2"}], " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"-", "6.06451"}], "*", 
+          RowBox[{"10", "^", "10"}]}], "+", 
+         RowBox[{"6.22364", "*", 
+          RowBox[{"10", "^", "7"}], " ", "\[Epsilon]"}], "+", 
+         RowBox[{"41.0137", " ", 
+          RowBox[{"\[Epsilon]", "^", "2"}]}]}], ")"}]}], "+", 
+      RowBox[{
+       RowBox[{"II", "^", "3"}], " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"-", "5.25154"}], "*", 
+          RowBox[{"10", "^", "13"}]}], "-", 
+         RowBox[{"2.5028", "*", 
+          RowBox[{"10", "^", "10"}], " ", "\[Epsilon]"}], "+", 
+         RowBox[{"6.4667", "*", 
+          RowBox[{"10", "^", "6"}], " ", 
+          RowBox[{"\[Epsilon]", "^", "2"}]}]}], ")"}]}]}]}], ";"}], "\n", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"set", " ", "epsilon"}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"testEpsilon", "=", " ", "0.001"}], ";"}], "\[IndentingNewLine]", 
+   "\n", 
+   RowBox[{"(*", "IVT", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"valAtZero", "=", 
+     RowBox[{"P", "[", 
+      RowBox[{"0", ",", "testEpsilon"}], "]"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"valAtOne", "=", 
+     RowBox[{"P", "[", 
+      RowBox[{"1", ",", "testEpsilon"}], "]"}]}], ";"}], "\n", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<P(0) = \>\"", ",", "valAtZero"}], "]"}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<P(1) = \>\"", ",", "valAtOne"}], "]"}], ";"}], 
+   "\[IndentingNewLine]"}]}]], "Input",
+ CellChangeTimes->{{3.9912082688690023`*^9, 3.99120827085809*^9}, {
+  3.99120834090396*^9, 3.99120836295325*^9}, {3.9912083997241497`*^9, 
+  3.991208497984787*^9}, {3.991208553566251*^9, 3.991208574769474*^9}, {
+  3.991726150596431*^9, 
+  3.991726151563611*^9}},ExpressionUUID->"2b5ddeca-5371-4396-9f8d-\
+f91dedba0d10"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"P(0) = \"\>", "\[InvisibleSpace]", "4532.08`"}],
+  SequenceForm["P(0) = ", 4532.08],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.991208429713319*^9, {3.991208471156254*^9, 3.991208498583992*^9}, {
+   3.991208555097134*^9, 3.991208575170676*^9}},
+ CellLabel->
+  "During evaluation of \
+In[241]:=",ExpressionUUID->"b55aa6fc-a9dd-4f1c-9f3a-bf2a2c0a07df"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"P(1) = \"\>", "\[InvisibleSpace]", 
+   RowBox[{"-", "5.2575930661032266`*^13"}]}],
+  SequenceForm["P(1) = ", -5.2575930661032266`*^13],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.991208429713319*^9, {3.991208471156254*^9, 3.991208498583992*^9}, {
+   3.991208555097134*^9, 3.991208575171886*^9}},
+ CellLabel->
+  "During evaluation of \
+In[241]:=",ExpressionUUID->"969295bb-6765-4265-96ed-dc60fb98b938"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"poly2", "=", 
+     RowBox[{"Collect", "[", 
+      RowBox[{"poly", ",", "\[Epsilon]", ",", "Simplify"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+   "Print", "[", "\"\<\\nPolynomial collected by powers of epsilon:\>\"", 
+    "]"}], "\n", 
+   RowBox[{"Print", "[", "poly2", "]"}], "\[IndentingNewLine]"}]}]], "Input",
+ CellChangeTimes->{{3.991118929538458*^9, 3.991118945753036*^9}, {
+  3.991119573635873*^9, 3.991119581985237*^9}, {3.991120242736836*^9, 
+  3.991120242841407*^9}, {3.991120959139956*^9, 3.991120987995652*^9}, {
+  3.9911210208492813`*^9, 3.991121021896591*^9}},
+ CellLabel->"In[25]:=",ExpressionUUID->"891b57a4-3586-48a3-9823-4806b08eff64"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"\\nPolynomial collected by powers of epsilon:\"\>"], "Print",
+ CellChangeTimes->{{3.9911189486188*^9, 3.991118970440999*^9}, 
+   3.991119037207513*^9, 3.9911195838946543`*^9, 3.9911202447832727`*^9, 
+   3.9911214175422983`*^9},
+ CellLabel->
+  "During evaluation of \
+In[25]:=",ExpressionUUID->"71743d5e-8611-4a9f-82cf-617fd2b288b3"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   SuperscriptBox["\[Beta]", "2"], " ", "\[Mu]", " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"II", " ", "\[Beta]"}], "+", "\[Mu]"}], ")"}], " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+   RowBox[{"(", 
+    RowBox[{"\[Gamma]", "-", 
+     RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}], " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"\[Alpha]", "-", "\[Beta]", "+", "\[Mu]"}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Gamma]", "+", "\[Mu]"}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Delta]", "+", "\[Mu]"}], ")"}]}], "+", 
+     RowBox[{
+      SuperscriptBox["II", "2"], " ", 
+      SuperscriptBox["\[Beta]", "2"], " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Alpha]", "+", "\[Mu]", "+", 
+        RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+     RowBox[{"II", " ", "\[Beta]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "\[Beta]"}], " ", "\[Mu]"}], "+", 
+        RowBox[{"\[Delta]", " ", "\[Mu]"}], "+", 
+        RowBox[{"2", " ", 
+         SuperscriptBox["\[Mu]", "2"]}], "+", 
+        RowBox[{"\[Gamma]", " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Delta]", "+", "\[Mu]"}], ")"}]}], "+", 
+        RowBox[{"\[Alpha]", " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Gamma]", "+", "\[Delta]", "+", 
+           RowBox[{"2", " ", "\[Mu]"}]}], ")"}]}], "-", 
+        RowBox[{"\[Beta]", " ", "\[Delta]", " ", "\[Sigma]"}], "+", 
+        RowBox[{"\[Delta]", " ", "\[Mu]", " ", "\[Sigma]"}]}], ")"}]}]}], 
+    ")"}]}], "-", 
+  RowBox[{
+   SuperscriptBox["II", "2"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   SuperscriptBox["\[Epsilon]", "2"], " ", "\[Mu]", " ", 
+   RowBox[{"(", 
+    RowBox[{"\[Alpha]", "+", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "1"}], "+", "II"}], ")"}], " ", "\[Beta]"}], "+", 
+     "\[Mu]"}], ")"}], " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"\[Mu]", " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Alpha]", "+", "\[Mu]", "-", 
+        RowBox[{"\[Beta]", " ", "\[Sigma]"}]}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"\[Alpha]", " ", "\[Gamma]"}], "+", 
+        RowBox[{"\[Gamma]", " ", "\[Mu]"}], "-", 
+        RowBox[{"\[Beta]", " ", "\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+     RowBox[{"II", " ", "\[Beta]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         SuperscriptBox["\[Alpha]", "2"], " ", "\[Gamma]"}], "+", 
+        RowBox[{"2", " ", "\[Alpha]", " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+        RowBox[{"\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"\[Gamma]", " ", "\[Mu]"}], "-", 
+           RowBox[{"\[Beta]", " ", "\[Delta]", " ", 
+            SuperscriptBox["\[Sigma]", "2"]}]}], ")"}]}]}], ")"}]}]}], 
+    ")"}]}], "+", 
+  RowBox[{"II", " ", "\[Beta]", " ", "\[Epsilon]", " ", "\[Mu]", " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{
+      SuperscriptBox["II", "3"], " ", 
+      SuperscriptBox["\[Beta]", "3"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+      "\[Sigma]", " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Alpha]", "+", "\[Mu]", "+", 
+        RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+     RowBox[{"\[Mu]", " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Alpha]", "-", "\[Beta]", "+", "\[Mu]"}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "\[Beta]"}], " ", 
+         SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", "\[Sigma]"}], "+", 
+        RowBox[{"\[Alpha]", " ", "\[Gamma]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "\[Gamma]"}], " ", "\[Mu]"}], "+", 
+           RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]"}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", 
+              RowBox[{"2", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+        RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"\[Beta]", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{"1", "-", 
+              RowBox[{"2", " ", "\[Sigma]"}]}], ")"}], " ", "\[Sigma]"}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Mu]", "2"], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", 
+              RowBox[{"2", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+           RowBox[{"\[Mu]", " ", "\[Sigma]", " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Delta]", "-", 
+              RowBox[{"\[Beta]", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Gamma]", "2"], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+           RowBox[{"\[Beta]", " ", "\[Delta]", " ", "\[Sigma]"}], "+", 
+           RowBox[{"\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "\[Mu]"}], "+", 
+              RowBox[{"\[Beta]", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}]}], 
+       ")"}]}], "+", 
+     RowBox[{
+      SuperscriptBox["II", "2"], " ", 
+      SuperscriptBox["\[Beta]", "2"], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", 
+          SuperscriptBox["\[Gamma]", "2"]}], " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Mu]", "-", 
+           RowBox[{"\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], "-", 
+        
+        RowBox[{"\[Beta]", " ", 
+         SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+         SuperscriptBox["\[Sigma]", "2"]}], "-", 
+        RowBox[{
+         SuperscriptBox["\[Alpha]", "2"], " ", "\[Gamma]", " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Gamma]", "+", "\[Delta]", "-", 
+           RowBox[{"2", " ", "\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+        RowBox[{"\[Alpha]", " ", "\[Gamma]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "2"}], " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+           RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", 
+              RowBox[{"6", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Sigma]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "\[Beta]"}], "+", "\[Delta]", "+", 
+              RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+        RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "2"}], " ", "\[Beta]", " ", "\[Delta]", " ", 
+            SuperscriptBox["\[Sigma]", "2"]}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Mu]", "2"], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", 
+              RowBox[{"4", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+           RowBox[{"\[Mu]", " ", "\[Sigma]", " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Delta]", "+", 
+              RowBox[{"\[Beta]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "3"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+              RowBox[{"2", " ", "\[Delta]", " ", "\[Sigma]"}]}], ")"}]}]}], 
+          ")"}]}]}], ")"}]}], "+", 
+     RowBox[{"II", " ", "\[Beta]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         SuperscriptBox["\[Beta]", "2"], " ", "\[Delta]", " ", "\[Sigma]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "\[Gamma]"}], " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+           RowBox[{"\[Gamma]", " ", "\[Delta]", " ", "\[Sigma]"}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+            "\[Sigma]"}]}], ")"}]}], "+", 
+        RowBox[{
+         SuperscriptBox["\[Alpha]", "2"], " ", "\[Gamma]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "2"}], " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+           RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]"}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", 
+              RowBox[{"4", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+        RowBox[{"\[Gamma]", " ", 
+         SuperscriptBox["\[Mu]", "2"], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "2"}], " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+           RowBox[{"2", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+           RowBox[{
+            SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+            RowBox[{"(", 
+             RowBox[{"2", "+", "\[Sigma]"}], ")"}]}], "+", 
+           RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "2"}], "+", 
+              RowBox[{"5", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+        RowBox[{"\[Beta]", " ", "\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            SuperscriptBox["\[Gamma]", "2"], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"2", " ", "\[Delta]"}], "+", "\[Mu]", "+", 
+              RowBox[{"\[Mu]", " ", "\[Sigma]"}]}], ")"}]}], "-", 
+           RowBox[{
+            SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", "\[Sigma]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", 
+              SuperscriptBox["\[Sigma]", "2"]}], ")"}]}], "+", 
+           RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Mu]", "-", 
+              RowBox[{"5", " ", "\[Mu]", " ", "\[Sigma]"}], "-", 
+              RowBox[{"4", " ", "\[Delta]", " ", 
+               SuperscriptBox["\[Sigma]", "2"]}]}], ")"}]}]}], ")"}]}], "+", 
+        RowBox[{"\[Alpha]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"\[Gamma]", " ", "\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"-", "4"}], " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+              RowBox[{"3", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+              RowBox[{
+               SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+               RowBox[{"(", 
+                RowBox[{"3", "+", "\[Sigma]"}], ")"}]}], "+", 
+              RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "4"}], "+", 
+                 RowBox[{"9", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "-", 
+           RowBox[{"\[Beta]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+               "\[Sigma]"}], "+", 
+              RowBox[{
+               SuperscriptBox["\[Gamma]", "2"], " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"\[Delta]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "-", 
+                 RowBox[{"\[Mu]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{"1", "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], "+", 
+              RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"\[Delta]", " ", "\[Sigma]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{"1", "+", "\[Sigma]"}], ")"}]}], "+", 
+                 RowBox[{"\[Mu]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", "1"}], "+", 
+                    RowBox[{"3", " ", "\[Sigma]"}], "+", 
+                    SuperscriptBox["\[Sigma]", "2"]}], ")"}]}]}], ")"}]}]}], 
+             ")"}]}]}], ")"}]}]}], ")"}]}]}], ")"}]}]}]], "Print",
+ CellChangeTimes->{{3.9911189486188*^9, 3.991118970440999*^9}, 
+   3.991119037207513*^9, 3.9911195838946543`*^9, 3.9911202447832727`*^9, 
+   3.991121417544434*^9},
+ CellLabel->
+  "During evaluation of \
+In[25]:=",ExpressionUUID->"5034ed19-52a5-4690-94ad-c4f44c96bfb5"]
+}, Open  ]]
+}, Open  ]],
+
+Cell["\<\
+
+\
+\>", "Text",
+ CellChangeTimes->{{3.9911195232103453`*^9, 3.991119545742887*^9}, {
+  3.991120042305561*^9, 3.9911200540349007`*^9}, {3.99112037922747*^9, 
+  3.9911204617787037`*^9}, {3.991121128169649*^9, 3.991121133997562*^9}, {
+  3.991203406316207*^9, 
+  3.991203406937286*^9}},ExpressionUUID->"294b5f29-9d24-4927-8145-\
+997eba3b9d8b"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"solEps", "=", 
+   RowBox[{"Solve", "[", 
+    RowBox[{
+     RowBox[{"poly2", "==", "0"}], ",", "\[Epsilon]"}], "]"}]}], 
+  ";"}], "\n", 
+ RowBox[{
+  RowBox[{"solEpsSimpl", "=", 
+   RowBox[{"Simplify", "[", 
+    RowBox[{"solEps", ",", 
+     RowBox[{"Assumptions", "->", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"II", ">", "0"}], ",", 
+        RowBox[{"II", "<", "1"}], ",", 
+        RowBox[{"\[Beta]", ">", "0"}], ",", 
+        RowBox[{"\[Alpha]", ">", "0"}], ",", 
+        RowBox[{"\[Mu]", ">", "0"}], ",", 
+        RowBox[{"\[Gamma]", ">", "0"}], ",", 
+        RowBox[{"\[Delta]", ">", "0"}], ",", 
+        RowBox[{"0", "<", "\[Sigma]", "<", "1"}]}], "}"}]}]}], "]"}]}], 
+  ";"}], "\n", 
+ RowBox[{"Print", "[", "solEpsSimpl", "]"}]}], "Input",
+ CellChangeTimes->{{3.991121118829803*^9, 3.991121118832505*^9}, 
+   3.991121332214282*^9, 3.991121450333805*^9},
+ CellLabel->"In[29]:=",ExpressionUUID->"4230c3db-8723-4ad6-93e9-2c3262a47721"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"\[Epsilon]", "\[Rule]", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"\[Beta]", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{
+           SuperscriptBox["II", "3"], " ", 
+           SuperscriptBox["\[Beta]", "3"], " ", "\[Gamma]", " ", "\[Delta]", " ",
+            "\[Sigma]", " ", 
+           RowBox[{"(", 
+            RowBox[{"\[Alpha]", "+", "\[Mu]", "+", 
+             RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+          RowBox[{"\[Mu]", " ", 
+           RowBox[{"(", 
+            RowBox[{"\[Alpha]", "-", "\[Beta]", "+", "\[Mu]"}], ")"}], " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"-", "\[Beta]"}], " ", 
+              SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+              "\[Sigma]"}], "+", 
+             RowBox[{"\[Alpha]", " ", "\[Gamma]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "\[Gamma]"}], " ", "\[Mu]"}], "+", 
+                RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                RowBox[{
+                 SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]"}], "+", 
+                RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "1"}], "+", 
+                   RowBox[{"2", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+             
+             RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"\[Beta]", " ", "\[Delta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{"1", "-", 
+                   RowBox[{"2", " ", "\[Sigma]"}]}], ")"}], " ", "\[Sigma]"}],
+                 "+", 
+                RowBox[{
+                 SuperscriptBox["\[Mu]", "2"], " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "1"}], "+", 
+                   RowBox[{"2", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+                RowBox[{"\[Mu]", " ", "\[Sigma]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{"\[Delta]", "-", 
+                   RowBox[{"\[Beta]", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}],
+              "+", 
+             RowBox[{
+              SuperscriptBox["\[Gamma]", "2"], " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                RowBox[{"\[Beta]", " ", "\[Delta]", " ", "\[Sigma]"}], "+", 
+                RowBox[{"\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "\[Mu]"}], "+", 
+                   RowBox[{"\[Beta]", " ", "\[Sigma]"}]}], ")"}]}]}], 
+               ")"}]}]}], ")"}]}], "+", 
+          RowBox[{
+           SuperscriptBox["II", "2"], " ", 
+           SuperscriptBox["\[Beta]", "2"], " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"-", 
+               SuperscriptBox["\[Gamma]", "2"]}], " ", "\[Mu]", " ", 
+              RowBox[{"(", 
+               RowBox[{"\[Mu]", "-", 
+                RowBox[{"\[Delta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], 
+             "-", 
+             RowBox[{"\[Beta]", " ", 
+              SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+              SuperscriptBox["\[Sigma]", "2"]}], "-", 
+             RowBox[{
+              SuperscriptBox["\[Alpha]", "2"], " ", "\[Gamma]", " ", 
+              RowBox[{"(", 
+               RowBox[{"\[Gamma]", "+", "\[Delta]", "-", 
+                RowBox[{"2", " ", "\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+             RowBox[{"\[Alpha]", " ", "\[Gamma]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "2"}], " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+                RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", 
+                   RowBox[{"6", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+                RowBox[{"\[Delta]", " ", "\[Sigma]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "\[Beta]"}], "+", "\[Delta]", "+", 
+                   RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}]}], 
+               ")"}]}], "+", 
+             RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "2"}], " ", "\[Beta]", " ", "\[Delta]", " ", 
+                 SuperscriptBox["\[Sigma]", "2"]}], "+", 
+                RowBox[{
+                 SuperscriptBox["\[Mu]", "2"], " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "1"}], "+", 
+                   RowBox[{"4", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+                RowBox[{"\[Mu]", " ", "\[Sigma]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{"\[Delta]", "+", 
+                   RowBox[{"\[Beta]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "3"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                   RowBox[{"2", " ", "\[Delta]", " ", "\[Sigma]"}]}], 
+                  ")"}]}]}], ")"}]}]}], ")"}]}], "+", 
+          RowBox[{"II", " ", "\[Beta]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              SuperscriptBox["\[Beta]", "2"], " ", "\[Delta]", " ", 
+              "\[Sigma]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "\[Gamma]"}], " ", "\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                RowBox[{"\[Gamma]", " ", "\[Delta]", " ", "\[Sigma]"}], "+", 
+                RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+                 "\[Sigma]"}]}], ")"}]}], "+", 
+             RowBox[{
+              SuperscriptBox["\[Alpha]", "2"], " ", "\[Gamma]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "2"}], " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+                RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                RowBox[{
+                 SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]"}], "+", 
+                RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", 
+                   RowBox[{"4", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+             
+             RowBox[{"\[Gamma]", " ", 
+              SuperscriptBox["\[Mu]", "2"], " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "2"}], " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+                RowBox[{"2", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                RowBox[{
+                 SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{"2", "+", "\[Sigma]"}], ")"}]}], "+", 
+                RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", 
+                   RowBox[{"5", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+             
+             RowBox[{"\[Beta]", " ", "\[Mu]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{
+                 SuperscriptBox["\[Gamma]", "2"], " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"2", " ", "\[Delta]"}], "+", "\[Mu]", "+", 
+                   RowBox[{"\[Mu]", " ", "\[Sigma]"}]}], ")"}]}], "-", 
+                RowBox[{
+                 SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", 
+                 "\[Sigma]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "1"}], "+", 
+                   SuperscriptBox["\[Sigma]", "2"]}], ")"}]}], "+", 
+                RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{"\[Mu]", "-", 
+                   RowBox[{"5", " ", "\[Mu]", " ", "\[Sigma]"}], "-", 
+                   RowBox[{"4", " ", "\[Delta]", " ", 
+                    SuperscriptBox["\[Sigma]", "2"]}]}], ")"}]}]}], ")"}]}], "+", 
+             RowBox[{"\[Alpha]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"\[Gamma]", " ", "\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"-", "4"}], " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+                   
+                   RowBox[{"3", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                   RowBox[{
+                    SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{"3", "+", "\[Sigma]"}], ")"}]}], "+", 
+                   RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "4"}], "+", 
+                    RowBox[{"9", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "-", 
+                RowBox[{"\[Beta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{
+                    SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+                    "\[Sigma]"}], "+", 
+                   RowBox[{
+                    SuperscriptBox["\[Gamma]", "2"], " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"\[Delta]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "-", 
+                    RowBox[{"\[Mu]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{"1", "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], "+", 
+                   RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"\[Delta]", " ", "\[Sigma]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{"1", "+", "\[Sigma]"}], ")"}]}], "+", 
+                    RowBox[{"\[Mu]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "1"}], "+", 
+                    RowBox[{"3", " ", "\[Sigma]"}], "+", 
+                    SuperscriptBox["\[Sigma]", "2"]}], ")"}]}]}], ")"}]}]}], 
+                  ")"}]}]}], ")"}]}]}], ")"}]}], "+", 
+          RowBox[{
+           RowBox[{"\[Sqrt]", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               SuperscriptBox[
+                RowBox[{"(", 
+                 RowBox[{"\[Gamma]", "-", "\[Delta]"}], ")"}], "2"], " ", 
+               SuperscriptBox["\[Mu]", "2"], " ", 
+               SuperscriptBox[
+                RowBox[{"(", 
+                 RowBox[{"\[Alpha]", "-", "\[Beta]", "+", "\[Mu]"}], ")"}], 
+                "2"]}], "+", 
+              RowBox[{
+               SuperscriptBox["II", "4"], " ", 
+               SuperscriptBox["\[Beta]", "4"], " ", 
+               SuperscriptBox["\[Delta]", "2"], " ", 
+               SuperscriptBox["\[Sigma]", "2"]}], "+", 
+              RowBox[{"2", " ", 
+               SuperscriptBox["II", "3"], " ", 
+               SuperscriptBox["\[Beta]", "3"], " ", "\[Delta]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"\[Alpha]", " ", "\[Gamma]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                 RowBox[{"\[Gamma]", " ", "\[Mu]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                 RowBox[{"\[Alpha]", " ", "\[Delta]", " ", "\[Sigma]"}], "+", 
+                 
+                 RowBox[{"\[Delta]", " ", "\[Sigma]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{"\[Mu]", "-", 
+                    RowBox[{"\[Beta]", " ", "\[Sigma]"}], "+", 
+                    RowBox[{"\[Mu]", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], 
+              "+", 
+              RowBox[{"2", " ", "II", " ", "\[Beta]", " ", "\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{"\[Alpha]", "-", "\[Beta]", "+", "\[Mu]"}], ")"}], " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"\[Alpha]", " ", 
+                  SuperscriptBox[
+                   RowBox[{"(", 
+                    RowBox[{"\[Gamma]", "-", "\[Delta]"}], ")"}], "2"]}], "-", 
+                 RowBox[{"\[Beta]", " ", "\[Delta]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"\[Gamma]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                    RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+                 RowBox[{"\[Mu]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    SuperscriptBox["\[Gamma]", "2"], "+", 
+                    RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "4"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                    RowBox[{
+                    SuperscriptBox["\[Delta]", "2"], " ", 
+                    RowBox[{"(", 
+                    RowBox[{"1", "+", "\[Sigma]"}], ")"}]}]}], ")"}]}]}], 
+                ")"}]}], "+", 
+              RowBox[{
+               SuperscriptBox["II", "2"], " ", 
+               SuperscriptBox["\[Beta]", "2"], " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{
+                  SuperscriptBox["\[Alpha]", "2"], " ", 
+                  SuperscriptBox[
+                   RowBox[{"(", 
+                    RowBox[{"\[Gamma]", "-", "\[Delta]"}], ")"}], "2"]}], "+", 
+                 RowBox[{
+                  SuperscriptBox["\[Beta]", "2"], " ", 
+                  SuperscriptBox["\[Delta]", "2"], " ", 
+                  SuperscriptBox["\[Sigma]", "2"]}], "-", 
+                 RowBox[{"2", " ", "\[Beta]", " ", "\[Delta]", " ", "\[Mu]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"2", " ", "\[Gamma]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                    RowBox[{"\[Delta]", " ", "\[Sigma]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{"2", "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], "+", 
+                 RowBox[{
+                  SuperscriptBox["\[Mu]", "2"], " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    SuperscriptBox["\[Gamma]", "2"], "+", 
+                    RowBox[{"2", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "5"}], "+", 
+                    RowBox[{"2", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+                    RowBox[{
+                    SuperscriptBox["\[Delta]", "2"], " ", 
+                    RowBox[{"(", 
+                    RowBox[{"1", "+", 
+                    RowBox[{"4", " ", "\[Sigma]"}], "+", 
+                    SuperscriptBox["\[Sigma]", "2"]}], ")"}]}]}], ")"}]}], "+", 
+                 RowBox[{"\[Alpha]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"-", "2"}], " ", "\[Beta]", " ", "\[Delta]", " ", 
+                    
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"\[Gamma]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                    RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+                    RowBox[{"2", " ", "\[Mu]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\[Gamma]", "2"], "+", 
+                    RowBox[{"2", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "3"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                    RowBox[{
+                    SuperscriptBox["\[Delta]", "2"], " ", 
+                    RowBox[{"(", 
+                    RowBox[{"1", "+", 
+                    RowBox[{"2", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}]}], 
+                   ")"}]}]}], ")"}]}]}], ")"}]}], " ", 
+           RowBox[{"Abs", "[", 
+            RowBox[{
+             RowBox[{"\[Gamma]", " ", 
+              SuperscriptBox["\[Mu]", "2"]}], "-", 
+             RowBox[{
+             "\[Beta]", " ", "\[Gamma]", " ", "\[Delta]", " ", "\[Sigma]"}], "-", 
+             RowBox[{
+             "\[Beta]", " ", "\[Gamma]", " ", "\[Mu]", " ", "\[Sigma]"}], "-", 
+             RowBox[{
+             "\[Beta]", " ", "\[Delta]", " ", "\[Mu]", " ", "\[Sigma]"}], "+", 
+             RowBox[{
+             "\[Gamma]", " ", "\[Delta]", " ", "\[Mu]", " ", "\[Sigma]"}], "+", 
+             RowBox[{"\[Beta]", " ", "\[Delta]", " ", "\[Mu]", " ", 
+              SuperscriptBox["\[Sigma]", "2"]}], "+", 
+             RowBox[{"\[Alpha]", " ", "\[Gamma]", " ", 
+              RowBox[{"(", 
+               RowBox[{"\[Mu]", "+", 
+                RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+             RowBox[{"II", " ", "\[Beta]", " ", "\[Gamma]", " ", 
+              RowBox[{"(", 
+               RowBox[{"\[Alpha]", "+", "\[Mu]", "+", 
+                RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}]}], "]"}]}]}],
+          ")"}]}], ")"}], "/", 
+      RowBox[{"(", 
+       RowBox[{"2", " ", "II", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+        RowBox[{"(", 
+         RowBox[{"\[Alpha]", "+", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"-", "1"}], "+", "II"}], ")"}], " ", "\[Beta]"}], "+", 
+          "\[Mu]"}], ")"}], " ", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"\[Mu]", " ", 
+           RowBox[{"(", 
+            RowBox[{"\[Alpha]", "+", "\[Mu]", "-", 
+             RowBox[{"\[Beta]", " ", "\[Sigma]"}]}], ")"}], " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"\[Alpha]", " ", "\[Gamma]"}], "+", 
+             RowBox[{"\[Gamma]", " ", "\[Mu]"}], "-", 
+             RowBox[{"\[Beta]", " ", "\[Delta]", " ", "\[Sigma]"}]}], ")"}]}],
+           "+", 
+          RowBox[{"II", " ", "\[Beta]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              SuperscriptBox["\[Alpha]", "2"], " ", "\[Gamma]"}], "+", 
+             RowBox[{"2", " ", "\[Alpha]", " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+             RowBox[{"\[Mu]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"\[Gamma]", " ", "\[Mu]"}], "-", 
+                RowBox[{"\[Beta]", " ", "\[Delta]", " ", 
+                 SuperscriptBox["\[Sigma]", "2"]}]}], ")"}]}]}], ")"}]}]}], 
+         ")"}]}], ")"}]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\[Epsilon]", "\[Rule]", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"\[Beta]", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{
+           SuperscriptBox["II", "3"], " ", 
+           SuperscriptBox["\[Beta]", "3"], " ", "\[Gamma]", " ", "\[Delta]", " ",
+            "\[Sigma]", " ", 
+           RowBox[{"(", 
+            RowBox[{"\[Alpha]", "+", "\[Mu]", "+", 
+             RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+          RowBox[{"\[Mu]", " ", 
+           RowBox[{"(", 
+            RowBox[{"\[Alpha]", "-", "\[Beta]", "+", "\[Mu]"}], ")"}], " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"-", "\[Beta]"}], " ", 
+              SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+              "\[Sigma]"}], "+", 
+             RowBox[{"\[Alpha]", " ", "\[Gamma]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "\[Gamma]"}], " ", "\[Mu]"}], "+", 
+                RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                RowBox[{
+                 SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]"}], "+", 
+                RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "1"}], "+", 
+                   RowBox[{"2", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+             
+             RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"\[Beta]", " ", "\[Delta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{"1", "-", 
+                   RowBox[{"2", " ", "\[Sigma]"}]}], ")"}], " ", "\[Sigma]"}],
+                 "+", 
+                RowBox[{
+                 SuperscriptBox["\[Mu]", "2"], " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "1"}], "+", 
+                   RowBox[{"2", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+                RowBox[{"\[Mu]", " ", "\[Sigma]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{"\[Delta]", "-", 
+                   RowBox[{"\[Beta]", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}],
+              "+", 
+             RowBox[{
+              SuperscriptBox["\[Gamma]", "2"], " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                RowBox[{"\[Beta]", " ", "\[Delta]", " ", "\[Sigma]"}], "+", 
+                RowBox[{"\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "\[Mu]"}], "+", 
+                   RowBox[{"\[Beta]", " ", "\[Sigma]"}]}], ")"}]}]}], 
+               ")"}]}]}], ")"}]}], "+", 
+          RowBox[{
+           SuperscriptBox["II", "2"], " ", 
+           SuperscriptBox["\[Beta]", "2"], " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"-", 
+               SuperscriptBox["\[Gamma]", "2"]}], " ", "\[Mu]", " ", 
+              RowBox[{"(", 
+               RowBox[{"\[Mu]", "-", 
+                RowBox[{"\[Delta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], 
+             "-", 
+             RowBox[{"\[Beta]", " ", 
+              SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+              SuperscriptBox["\[Sigma]", "2"]}], "-", 
+             RowBox[{
+              SuperscriptBox["\[Alpha]", "2"], " ", "\[Gamma]", " ", 
+              RowBox[{"(", 
+               RowBox[{"\[Gamma]", "+", "\[Delta]", "-", 
+                RowBox[{"2", " ", "\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+             RowBox[{"\[Alpha]", " ", "\[Gamma]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "2"}], " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+                RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", 
+                   RowBox[{"6", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+                RowBox[{"\[Delta]", " ", "\[Sigma]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "\[Beta]"}], "+", "\[Delta]", "+", 
+                   RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}]}], 
+               ")"}]}], "+", 
+             RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "2"}], " ", "\[Beta]", " ", "\[Delta]", " ", 
+                 SuperscriptBox["\[Sigma]", "2"]}], "+", 
+                RowBox[{
+                 SuperscriptBox["\[Mu]", "2"], " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "1"}], "+", 
+                   RowBox[{"4", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+                RowBox[{"\[Mu]", " ", "\[Sigma]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{"\[Delta]", "+", 
+                   RowBox[{"\[Beta]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "3"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                   RowBox[{"2", " ", "\[Delta]", " ", "\[Sigma]"}]}], 
+                  ")"}]}]}], ")"}]}]}], ")"}]}], "+", 
+          RowBox[{"II", " ", "\[Beta]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              SuperscriptBox["\[Beta]", "2"], " ", "\[Delta]", " ", 
+              "\[Sigma]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "\[Gamma]"}], " ", "\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                RowBox[{"\[Gamma]", " ", "\[Delta]", " ", "\[Sigma]"}], "+", 
+                RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+                 "\[Sigma]"}]}], ")"}]}], "+", 
+             RowBox[{
+              SuperscriptBox["\[Alpha]", "2"], " ", "\[Gamma]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "2"}], " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+                RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                RowBox[{
+                 SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]"}], "+", 
+                RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", 
+                   RowBox[{"4", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+             
+             RowBox[{"\[Gamma]", " ", 
+              SuperscriptBox["\[Mu]", "2"], " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "2"}], " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+                RowBox[{"2", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                RowBox[{
+                 SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{"2", "+", "\[Sigma]"}], ")"}]}], "+", 
+                RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", 
+                   RowBox[{"5", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+             
+             RowBox[{"\[Beta]", " ", "\[Mu]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{
+                 SuperscriptBox["\[Gamma]", "2"], " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"2", " ", "\[Delta]"}], "+", "\[Mu]", "+", 
+                   RowBox[{"\[Mu]", " ", "\[Sigma]"}]}], ")"}]}], "-", 
+                RowBox[{
+                 SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", 
+                 "\[Sigma]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "1"}], "+", 
+                   SuperscriptBox["\[Sigma]", "2"]}], ")"}]}], "+", 
+                RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{"\[Mu]", "-", 
+                   RowBox[{"5", " ", "\[Mu]", " ", "\[Sigma]"}], "-", 
+                   RowBox[{"4", " ", "\[Delta]", " ", 
+                    SuperscriptBox["\[Sigma]", "2"]}]}], ")"}]}]}], ")"}]}], "+", 
+             RowBox[{"\[Alpha]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"\[Gamma]", " ", "\[Mu]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"-", "4"}], " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+                   
+                   RowBox[{"3", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                   RowBox[{
+                    SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{"3", "+", "\[Sigma]"}], ")"}]}], "+", 
+                   RowBox[{"\[Delta]", " ", "\[Mu]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "4"}], "+", 
+                    RowBox[{"9", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "-", 
+                RowBox[{"\[Beta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{
+                    SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "1"}], "+", "\[Sigma]"}], ")"}], " ", 
+                    "\[Sigma]"}], "+", 
+                   RowBox[{
+                    SuperscriptBox["\[Gamma]", "2"], " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"\[Delta]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "-", 
+                    RowBox[{"\[Mu]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{"1", "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], "+", 
+                   RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"\[Delta]", " ", "\[Sigma]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{"1", "+", "\[Sigma]"}], ")"}]}], "+", 
+                    RowBox[{"\[Mu]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "1"}], "+", 
+                    RowBox[{"3", " ", "\[Sigma]"}], "+", 
+                    SuperscriptBox["\[Sigma]", "2"]}], ")"}]}]}], ")"}]}]}], 
+                  ")"}]}]}], ")"}]}]}], ")"}]}], "-", 
+          RowBox[{
+           RowBox[{"\[Sqrt]", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               SuperscriptBox[
+                RowBox[{"(", 
+                 RowBox[{"\[Gamma]", "-", "\[Delta]"}], ")"}], "2"], " ", 
+               SuperscriptBox["\[Mu]", "2"], " ", 
+               SuperscriptBox[
+                RowBox[{"(", 
+                 RowBox[{"\[Alpha]", "-", "\[Beta]", "+", "\[Mu]"}], ")"}], 
+                "2"]}], "+", 
+              RowBox[{
+               SuperscriptBox["II", "4"], " ", 
+               SuperscriptBox["\[Beta]", "4"], " ", 
+               SuperscriptBox["\[Delta]", "2"], " ", 
+               SuperscriptBox["\[Sigma]", "2"]}], "+", 
+              RowBox[{"2", " ", 
+               SuperscriptBox["II", "3"], " ", 
+               SuperscriptBox["\[Beta]", "3"], " ", "\[Delta]", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"\[Alpha]", " ", "\[Gamma]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                 RowBox[{"\[Gamma]", " ", "\[Mu]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                 RowBox[{"\[Alpha]", " ", "\[Delta]", " ", "\[Sigma]"}], "+", 
+                 
+                 RowBox[{"\[Delta]", " ", "\[Sigma]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{"\[Mu]", "-", 
+                    RowBox[{"\[Beta]", " ", "\[Sigma]"}], "+", 
+                    RowBox[{"\[Mu]", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], 
+              "+", 
+              RowBox[{"2", " ", "II", " ", "\[Beta]", " ", "\[Mu]", " ", 
+               RowBox[{"(", 
+                RowBox[{"\[Alpha]", "-", "\[Beta]", "+", "\[Mu]"}], ")"}], " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"\[Alpha]", " ", 
+                  SuperscriptBox[
+                   RowBox[{"(", 
+                    RowBox[{"\[Gamma]", "-", "\[Delta]"}], ")"}], "2"]}], "-", 
+                 RowBox[{"\[Beta]", " ", "\[Delta]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"\[Gamma]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                    RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+                 RowBox[{"\[Mu]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    SuperscriptBox["\[Gamma]", "2"], "+", 
+                    RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "4"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                    RowBox[{
+                    SuperscriptBox["\[Delta]", "2"], " ", 
+                    RowBox[{"(", 
+                    RowBox[{"1", "+", "\[Sigma]"}], ")"}]}]}], ")"}]}]}], 
+                ")"}]}], "+", 
+              RowBox[{
+               SuperscriptBox["II", "2"], " ", 
+               SuperscriptBox["\[Beta]", "2"], " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{
+                  SuperscriptBox["\[Alpha]", "2"], " ", 
+                  SuperscriptBox[
+                   RowBox[{"(", 
+                    RowBox[{"\[Gamma]", "-", "\[Delta]"}], ")"}], "2"]}], "+", 
+                 RowBox[{
+                  SuperscriptBox["\[Beta]", "2"], " ", 
+                  SuperscriptBox["\[Delta]", "2"], " ", 
+                  SuperscriptBox["\[Sigma]", "2"]}], "-", 
+                 RowBox[{"2", " ", "\[Beta]", " ", "\[Delta]", " ", "\[Mu]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"2", " ", "\[Gamma]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                    RowBox[{"\[Delta]", " ", "\[Sigma]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{"2", "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], "+", 
+                 RowBox[{
+                  SuperscriptBox["\[Mu]", "2"], " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    SuperscriptBox["\[Gamma]", "2"], "+", 
+                    RowBox[{"2", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "5"}], "+", 
+                    RowBox[{"2", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+                    RowBox[{
+                    SuperscriptBox["\[Delta]", "2"], " ", 
+                    RowBox[{"(", 
+                    RowBox[{"1", "+", 
+                    RowBox[{"4", " ", "\[Sigma]"}], "+", 
+                    SuperscriptBox["\[Sigma]", "2"]}], ")"}]}]}], ")"}]}], "+", 
+                 RowBox[{"\[Alpha]", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"-", "2"}], " ", "\[Beta]", " ", "\[Delta]", " ", 
+                    
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"\[Gamma]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                    RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+                    RowBox[{"2", " ", "\[Mu]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    SuperscriptBox["\[Gamma]", "2"], "+", 
+                    RowBox[{"2", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"-", "3"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                    RowBox[{
+                    SuperscriptBox["\[Delta]", "2"], " ", 
+                    RowBox[{"(", 
+                    RowBox[{"1", "+", 
+                    RowBox[{"2", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}]}], 
+                   ")"}]}]}], ")"}]}]}], ")"}]}], " ", 
+           RowBox[{"Abs", "[", 
+            RowBox[{
+             RowBox[{"\[Gamma]", " ", 
+              SuperscriptBox["\[Mu]", "2"]}], "-", 
+             RowBox[{
+             "\[Beta]", " ", "\[Gamma]", " ", "\[Delta]", " ", "\[Sigma]"}], "-", 
+             RowBox[{
+             "\[Beta]", " ", "\[Gamma]", " ", "\[Mu]", " ", "\[Sigma]"}], "-", 
+             RowBox[{
+             "\[Beta]", " ", "\[Delta]", " ", "\[Mu]", " ", "\[Sigma]"}], "+", 
+             RowBox[{
+             "\[Gamma]", " ", "\[Delta]", " ", "\[Mu]", " ", "\[Sigma]"}], "+", 
+             RowBox[{"\[Beta]", " ", "\[Delta]", " ", "\[Mu]", " ", 
+              SuperscriptBox["\[Sigma]", "2"]}], "+", 
+             RowBox[{"\[Alpha]", " ", "\[Gamma]", " ", 
+              RowBox[{"(", 
+               RowBox[{"\[Mu]", "+", 
+                RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+             RowBox[{"II", " ", "\[Beta]", " ", "\[Gamma]", " ", 
+              RowBox[{"(", 
+               RowBox[{"\[Alpha]", "+", "\[Mu]", "+", 
+                RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}]}], "]"}]}]}],
+          ")"}]}], ")"}], "/", 
+      RowBox[{"(", 
+       RowBox[{"2", " ", "II", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+        RowBox[{"(", 
+         RowBox[{"\[Alpha]", "+", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"-", "1"}], "+", "II"}], ")"}], " ", "\[Beta]"}], "+", 
+          "\[Mu]"}], ")"}], " ", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"\[Mu]", " ", 
+           RowBox[{"(", 
+            RowBox[{"\[Alpha]", "+", "\[Mu]", "-", 
+             RowBox[{"\[Beta]", " ", "\[Sigma]"}]}], ")"}], " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"\[Alpha]", " ", "\[Gamma]"}], "+", 
+             RowBox[{"\[Gamma]", " ", "\[Mu]"}], "-", 
+             RowBox[{"\[Beta]", " ", "\[Delta]", " ", "\[Sigma]"}]}], ")"}]}],
+           "+", 
+          RowBox[{"II", " ", "\[Beta]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              SuperscriptBox["\[Alpha]", "2"], " ", "\[Gamma]"}], "+", 
+             RowBox[{"2", " ", "\[Alpha]", " ", "\[Gamma]", " ", "\[Mu]"}], "+", 
+             RowBox[{"\[Mu]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"\[Gamma]", " ", "\[Mu]"}], "-", 
+                RowBox[{"\[Beta]", " ", "\[Delta]", " ", 
+                 SuperscriptBox["\[Sigma]", "2"]}]}], ")"}]}]}], ")"}]}]}], 
+         ")"}]}], ")"}]}]}], "}"}]}], "}"}]], "Print",
+ CellChangeTimes->{3.991121464518176*^9},
+ CellLabel->
+  "During evaluation of \
+In[29]:=",ExpressionUUID->"912d898f-6ee6-430b-b883-30970ebe9edc"]
+}, Open  ]],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.9911212551177483`*^9, 3.991121257029571*^9}, 
+   3.991121328654867*^9, 
+   3.991121489597892*^9},ExpressionUUID->"685e0c40-d46c-475e-b990-\
+47c529013bad"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"disc", "=", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{
+        SuperscriptBox[
+         RowBox[{"(", 
+          RowBox[{"\[Gamma]", "-", "\[Delta]"}], ")"}], "2"], " ", 
+        SuperscriptBox["\[Mu]", "2"], " ", 
+        SuperscriptBox[
+         RowBox[{"(", 
+          RowBox[{"\[Alpha]", "-", "\[Beta]", "+", "\[Mu]"}], ")"}], "2"]}], "+", 
+       RowBox[{
+        SuperscriptBox["II", "4"], " ", 
+        SuperscriptBox["\[Beta]", "4"], " ", 
+        SuperscriptBox["\[Delta]", "2"], " ", 
+        SuperscriptBox["\[Sigma]", "2"]}], "+", 
+       RowBox[{"2", " ", 
+        SuperscriptBox["II", "3"], " ", 
+        SuperscriptBox["\[Beta]", "3"], " ", "\[Delta]", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"\[Alpha]", " ", "\[Gamma]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+          RowBox[{"\[Gamma]", " ", "\[Mu]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+          RowBox[{"\[Alpha]", " ", "\[Delta]", " ", "\[Sigma]"}], "+", 
+          RowBox[{"\[Delta]", " ", "\[Sigma]", " ", 
+           RowBox[{"(", 
+            RowBox[{"\[Mu]", "-", 
+             RowBox[{"\[Beta]", " ", "\[Sigma]"}], "+", 
+             RowBox[{"\[Mu]", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}], "+", 
+       RowBox[{"2", " ", "II", " ", "\[Beta]", " ", "\[Mu]", " ", 
+        RowBox[{"(", 
+         RowBox[{"\[Alpha]", "-", "\[Beta]", "+", "\[Mu]"}], ")"}], " ", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"\[Alpha]", " ", 
+           SuperscriptBox[
+            RowBox[{"(", 
+             RowBox[{"\[Gamma]", "-", "\[Delta]"}], ")"}], "2"]}], "-", 
+          RowBox[{"\[Beta]", " ", "\[Delta]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"\[Gamma]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+             RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+          RowBox[{"\[Mu]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             SuperscriptBox["\[Gamma]", "2"], "+", 
+             RowBox[{"\[Gamma]", " ", "\[Delta]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"-", "4"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+             RowBox[{
+              SuperscriptBox["\[Delta]", "2"], " ", 
+              RowBox[{"(", 
+               RowBox[{"1", "+", "\[Sigma]"}], ")"}]}]}], ")"}]}]}], ")"}]}], 
+       "+", 
+       RowBox[{
+        SuperscriptBox["II", "2"], " ", 
+        SuperscriptBox["\[Beta]", "2"], " ", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{
+           SuperscriptBox["\[Alpha]", "2"], " ", 
+           SuperscriptBox[
+            RowBox[{"(", 
+             RowBox[{"\[Gamma]", "-", "\[Delta]"}], ")"}], "2"]}], "+", 
+          RowBox[{
+           SuperscriptBox["\[Beta]", "2"], " ", 
+           SuperscriptBox["\[Delta]", "2"], " ", 
+           SuperscriptBox["\[Sigma]", "2"]}], "-", 
+          RowBox[{"2", " ", "\[Beta]", " ", "\[Delta]", " ", "\[Mu]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"2", " ", "\[Gamma]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+             RowBox[{"\[Delta]", " ", "\[Sigma]", " ", 
+              RowBox[{"(", 
+               RowBox[{"2", "+", "\[Sigma]"}], ")"}]}]}], ")"}]}], "+", 
+          RowBox[{
+           SuperscriptBox["\[Mu]", "2"], " ", 
+           RowBox[{"(", 
+            RowBox[{
+             SuperscriptBox["\[Gamma]", "2"], "+", 
+             RowBox[{"2", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"-", "5"}], "+", 
+                RowBox[{"2", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+             RowBox[{
+              SuperscriptBox["\[Delta]", "2"], " ", 
+              RowBox[{"(", 
+               RowBox[{"1", "+", 
+                RowBox[{"4", " ", "\[Sigma]"}], "+", 
+                SuperscriptBox["\[Sigma]", "2"]}], ")"}]}]}], ")"}]}], "+", 
+          RowBox[{"\[Alpha]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"-", "2"}], " ", "\[Beta]", " ", "\[Delta]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"\[Gamma]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "2"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                RowBox[{"\[Delta]", " ", "\[Sigma]"}]}], ")"}]}], "+", 
+             RowBox[{"2", " ", "\[Mu]", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                SuperscriptBox["\[Gamma]", "2"], "+", 
+                RowBox[{"2", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"-", "3"}], "+", "\[Sigma]"}], ")"}]}], "+", 
+                RowBox[{
+                 SuperscriptBox["\[Delta]", "2"], " ", 
+                 RowBox[{"(", 
+                  RowBox[{"1", "+", 
+                   RowBox[{"2", " ", "\[Sigma]"}]}], ")"}]}]}], ")"}]}]}], 
+            ")"}]}]}], ")"}]}]}], ")"}]}], " ", ";"}], "\n", 
+   RowBox[{"Factor", "[", "disc", "]"}], "\n", 
+   RowBox[{"FullSimplify", "[", "disc", "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.9911228862385597`*^9, 3.9911229127995157`*^9}},
+ CellLabel->"In[38]:=",ExpressionUUID->"41e9cfdf-0fee-473a-9663-b421d8710f25"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   SuperscriptBox["II", "2"], " ", 
+   SuperscriptBox["\[Alpha]", "2"], " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Gamma]", "2"]}], "-", 
+  RowBox[{"2", " ", 
+   SuperscriptBox["II", "2"], " ", 
+   SuperscriptBox["\[Alpha]", "2"], " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Delta]"}], "+", 
+  RowBox[{"4", " ", 
+   SuperscriptBox["II", "2"], " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", "\[Gamma]", " ", "\[Delta]"}], "-", 
+  RowBox[{"4", " ", 
+   SuperscriptBox["II", "3"], " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", "\[Gamma]", " ", "\[Delta]"}], "+", 
+  RowBox[{
+   SuperscriptBox["II", "2"], " ", 
+   SuperscriptBox["\[Alpha]", "2"], " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Delta]", "2"]}], "+", 
+  RowBox[{"2", " ", "II", " ", 
+   SuperscriptBox["\[Alpha]", "2"], " ", "\[Beta]", " ", 
+   SuperscriptBox["\[Gamma]", "2"], " ", "\[Mu]"}], "-", 
+  RowBox[{"2", " ", "II", " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Gamma]", "2"], " ", "\[Mu]"}], "+", 
+  RowBox[{"2", " ", 
+   SuperscriptBox["II", "2"], " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Gamma]", "2"], " ", "\[Mu]"}], "-", 
+  RowBox[{"4", " ", "II", " ", 
+   SuperscriptBox["\[Alpha]", "2"], " ", "\[Beta]", " ", "\[Gamma]", " ", 
+   "\[Delta]", " ", "\[Mu]"}], "+", 
+  RowBox[{"8", " ", "II", " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   "\[Mu]"}], "-", 
+  RowBox[{"12", " ", 
+   SuperscriptBox["II", "2"], " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   "\[Mu]"}], "-", 
+  RowBox[{"4", " ", "II", " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   "\[Mu]"}], "+", 
+  RowBox[{"8", " ", 
+   SuperscriptBox["II", "2"], " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   "\[Mu]"}], "-", 
+  RowBox[{"4", " ", 
+   SuperscriptBox["II", "3"], " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   "\[Mu]"}], "+", 
+  RowBox[{"2", " ", "II", " ", 
+   SuperscriptBox["\[Alpha]", "2"], " ", "\[Beta]", " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]"}], "-", 
+  RowBox[{"2", " ", "II", " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]"}], "+", 
+  RowBox[{"2", " ", 
+   SuperscriptBox["II", "2"], " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]"}], "+", 
+  RowBox[{
+   SuperscriptBox["\[Alpha]", "2"], " ", 
+   SuperscriptBox["\[Gamma]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "-", 
+  RowBox[{"2", " ", "\[Alpha]", " ", "\[Beta]", " ", 
+   SuperscriptBox["\[Gamma]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "+", 
+  RowBox[{"4", " ", "II", " ", "\[Alpha]", " ", "\[Beta]", " ", 
+   SuperscriptBox["\[Gamma]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "+", 
+  RowBox[{
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Gamma]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "-", 
+  RowBox[{"2", " ", "II", " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Gamma]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "+", 
+  RowBox[{
+   SuperscriptBox["II", "2"], " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Gamma]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "-", 
+  RowBox[{"2", " ", 
+   SuperscriptBox["\[Alpha]", "2"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "+", 
+  RowBox[{
+  "4", " ", "\[Alpha]", " ", "\[Beta]", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "-", 
+  RowBox[{
+  "12", " ", "II", " ", "\[Alpha]", " ", "\[Beta]", " ", "\[Gamma]", " ", 
+   "\[Delta]", " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "-", 
+  RowBox[{"2", " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "+", 
+  RowBox[{"12", " ", "II", " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "-", 
+  RowBox[{"10", " ", 
+   SuperscriptBox["II", "2"], " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "+", 
+  RowBox[{
+   SuperscriptBox["\[Alpha]", "2"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "-", 
+  RowBox[{"2", " ", "\[Alpha]", " ", "\[Beta]", " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "+", 
+  RowBox[{"4", " ", "II", " ", "\[Alpha]", " ", "\[Beta]", " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "+", 
+  RowBox[{
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "-", 
+  RowBox[{"2", " ", "II", " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "+", 
+  RowBox[{
+   SuperscriptBox["II", "2"], " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"]}], "+", 
+  RowBox[{"2", " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Gamma]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "3"]}], "-", 
+  RowBox[{"2", " ", "\[Beta]", " ", 
+   SuperscriptBox["\[Gamma]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "3"]}], "+", 
+  RowBox[{"2", " ", "II", " ", "\[Beta]", " ", 
+   SuperscriptBox["\[Gamma]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "3"]}], "-", 
+  RowBox[{"4", " ", "\[Alpha]", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   SuperscriptBox["\[Mu]", "3"]}], "+", 
+  RowBox[{"4", " ", "\[Beta]", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   SuperscriptBox["\[Mu]", "3"]}], "-", 
+  RowBox[{"8", " ", "II", " ", "\[Beta]", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   SuperscriptBox["\[Mu]", "3"]}], "+", 
+  RowBox[{"2", " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "3"]}], "-", 
+  RowBox[{"2", " ", "\[Beta]", " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "3"]}], "+", 
+  RowBox[{"2", " ", "II", " ", "\[Beta]", " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "3"]}], "+", 
+  RowBox[{
+   SuperscriptBox["\[Gamma]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "4"]}], "-", 
+  RowBox[{"2", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   SuperscriptBox["\[Mu]", "4"]}], "+", 
+  RowBox[{
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "4"]}], "-", 
+  RowBox[{"2", " ", 
+   SuperscriptBox["II", "2"], " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   "\[Sigma]"}], "+", 
+  RowBox[{"2", " ", 
+   SuperscriptBox["II", "3"], " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   "\[Sigma]"}], "-", 
+  RowBox[{"2", " ", 
+   SuperscriptBox["II", "2"], " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]"}], "+", 
+  RowBox[{"2", " ", 
+   SuperscriptBox["II", "3"], " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", "\[Sigma]"}], "-", 
+  RowBox[{"2", " ", "II", " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   "\[Mu]", " ", "\[Sigma]"}], "+", 
+  RowBox[{"4", " ", 
+   SuperscriptBox["II", "2"], " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   "\[Mu]", " ", "\[Sigma]"}], "+", 
+  RowBox[{"2", " ", "II", " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   "\[Mu]", " ", "\[Sigma]"}], "-", 
+  RowBox[{"4", " ", 
+   SuperscriptBox["II", "2"], " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   "\[Mu]", " ", "\[Sigma]"}], "+", 
+  RowBox[{"2", " ", 
+   SuperscriptBox["II", "3"], " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   "\[Mu]", " ", "\[Sigma]"}], "-", 
+  RowBox[{"2", " ", "II", " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", "\[Sigma]"}], "+", 
+  RowBox[{"4", " ", 
+   SuperscriptBox["II", "2"], " ", "\[Alpha]", " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", "\[Sigma]"}], "+", 
+  RowBox[{"2", " ", "II", " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", "\[Sigma]"}], "-", 
+  RowBox[{"4", " ", 
+   SuperscriptBox["II", "2"], " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", "\[Sigma]"}], "+", 
+  RowBox[{"2", " ", 
+   SuperscriptBox["II", "3"], " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", "\[Sigma]"}], "+", 
+  RowBox[{
+  "2", " ", "II", " ", "\[Alpha]", " ", "\[Beta]", " ", "\[Gamma]", " ", 
+   "\[Delta]", " ", 
+   SuperscriptBox["\[Mu]", "2"], " ", "\[Sigma]"}], "-", 
+  RowBox[{"4", " ", "II", " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   SuperscriptBox["\[Mu]", "2"], " ", "\[Sigma]"}], "+", 
+  RowBox[{"4", " ", 
+   SuperscriptBox["II", "2"], " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   SuperscriptBox["\[Mu]", "2"], " ", "\[Sigma]"}], "+", 
+  RowBox[{"2", " ", "II", " ", "\[Alpha]", " ", "\[Beta]", " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"], " ", "\[Sigma]"}], "-", 
+  RowBox[{"4", " ", "II", " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"], " ", "\[Sigma]"}], "+", 
+  RowBox[{"4", " ", 
+   SuperscriptBox["II", "2"], " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"], " ", "\[Sigma]"}], "+", 
+  RowBox[{"2", " ", "II", " ", "\[Beta]", " ", "\[Gamma]", " ", "\[Delta]", " ", 
+   SuperscriptBox["\[Mu]", "3"], " ", "\[Sigma]"}], "+", 
+  RowBox[{"2", " ", "II", " ", "\[Beta]", " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "3"], " ", "\[Sigma]"}], "+", 
+  RowBox[{
+   SuperscriptBox["II", "2"], " ", 
+   SuperscriptBox["\[Beta]", "4"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Sigma]", "2"]}], "-", 
+  RowBox[{"2", " ", 
+   SuperscriptBox["II", "3"], " ", 
+   SuperscriptBox["\[Beta]", "4"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Sigma]", "2"]}], "+", 
+  RowBox[{
+   SuperscriptBox["II", "4"], " ", 
+   SuperscriptBox["\[Beta]", "4"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Sigma]", "2"]}], "-", 
+  RowBox[{"2", " ", 
+   SuperscriptBox["II", "2"], " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", 
+   SuperscriptBox["\[Sigma]", "2"]}], "+", 
+  RowBox[{"2", " ", 
+   SuperscriptBox["II", "3"], " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", "\[Mu]", " ", 
+   SuperscriptBox["\[Sigma]", "2"]}], "+", 
+  RowBox[{
+   SuperscriptBox["II", "2"], " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"], " ", 
+   SuperscriptBox["\[Sigma]", "2"]}]}]], "Output",
+ CellChangeTimes->{3.991122933476554*^9},
+ CellLabel->"Out[39]=",ExpressionUUID->"51a258d4-5fe4-4c4a-8f45-d2531fa80042"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   SuperscriptBox[
+    RowBox[{"(", 
+     RowBox[{"\[Gamma]", "-", "\[Delta]"}], ")"}], "2"], " ", 
+   SuperscriptBox["\[Mu]", "2"], " ", 
+   SuperscriptBox[
+    RowBox[{"(", 
+     RowBox[{"\[Alpha]", "-", "\[Beta]", "+", "\[Mu]"}], ")"}], "2"]}], "+", 
+  RowBox[{
+   SuperscriptBox["II", "4"], " ", 
+   SuperscriptBox["\[Beta]", "4"], " ", 
+   SuperscriptBox["\[Delta]", "2"], " ", 
+   SuperscriptBox["\[Sigma]", "2"]}], "+", 
+  RowBox[{"2", " ", 
+   SuperscriptBox["II", "3"], " ", 
+   SuperscriptBox["\[Beta]", "3"], " ", "\[Delta]", " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"-", "2"}], " ", "\[Gamma]", " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Alpha]", "+", "\[Mu]"}], ")"}]}], "+", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"\[Gamma]", "+", "\[Delta]"}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Alpha]", "+", "\[Mu]"}], ")"}], " ", "\[Sigma]"}], "+", 
+     RowBox[{"\[Delta]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "\[Beta]"}], "+", "\[Mu]"}], ")"}], " ", 
+      SuperscriptBox["\[Sigma]", "2"]}]}], ")"}]}], "+", 
+  RowBox[{"2", " ", "II", " ", "\[Beta]", " ", "\[Mu]", " ", 
+   RowBox[{"(", 
+    RowBox[{"\[Alpha]", "-", "\[Beta]", "+", "\[Mu]"}], ")"}], " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"\[Alpha]", " ", 
+      SuperscriptBox[
+       RowBox[{"(", 
+        RowBox[{"\[Gamma]", "-", "\[Delta]"}], ")"}], "2"]}], "+", 
+     RowBox[{"\[Beta]", " ", "\[Delta]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"2", " ", "\[Gamma]"}], "-", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"\[Gamma]", "+", "\[Delta]"}], ")"}], " ", "\[Sigma]"}]}], 
+       ")"}]}], "+", 
+     RowBox[{"\[Mu]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        SuperscriptBox["\[Gamma]", "2"], "-", 
+        RowBox[{"4", " ", "\[Gamma]", " ", "\[Delta]"}], "+", 
+        SuperscriptBox["\[Delta]", "2"], "+", 
+        RowBox[{"\[Delta]", " ", 
+         RowBox[{"(", 
+          RowBox[{"\[Gamma]", "+", "\[Delta]"}], ")"}], " ", "\[Sigma]"}]}], 
+       ")"}]}]}], ")"}]}], "+", 
+  RowBox[{
+   SuperscriptBox["II", "2"], " ", 
+   SuperscriptBox["\[Beta]", "2"], " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{
+      SuperscriptBox["\[Alpha]", "2"], " ", 
+      SuperscriptBox[
+       RowBox[{"(", 
+        RowBox[{"\[Gamma]", "-", "\[Delta]"}], ")"}], "2"]}], "+", 
+     RowBox[{"\[Mu]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"8", " ", "\[Beta]", " ", "\[Gamma]", " ", "\[Delta]"}], "+", 
+        
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           SuperscriptBox["\[Gamma]", "2"], "-", 
+           RowBox[{"10", " ", "\[Gamma]", " ", "\[Delta]"}], "+", 
+           SuperscriptBox["\[Delta]", "2"]}], ")"}], " ", "\[Mu]"}]}], 
+       ")"}]}], "+", 
+     RowBox[{"4", " ", "\[Delta]", " ", 
+      RowBox[{"(", 
+       RowBox[{"\[Gamma]", "+", "\[Delta]"}], ")"}], " ", "\[Mu]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "\[Beta]"}], "+", "\[Mu]"}], ")"}], " ", "\[Sigma]"}], "+", 
+     RowBox[{
+      SuperscriptBox["\[Delta]", "2"], " ", 
+      SuperscriptBox[
+       RowBox[{"(", 
+        RowBox[{"\[Beta]", "-", "\[Mu]"}], ")"}], "2"], " ", 
+      SuperscriptBox["\[Sigma]", "2"]}], "+", 
+     RowBox[{"2", " ", "\[Alpha]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"\[Beta]", " ", "\[Delta]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"2", " ", "\[Gamma]"}], "-", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{"\[Gamma]", "+", "\[Delta]"}], ")"}], " ", 
+            "\[Sigma]"}]}], ")"}]}], "+", 
+        RowBox[{"\[Mu]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           SuperscriptBox["\[Gamma]", "2"], "-", 
+           RowBox[{"6", " ", "\[Gamma]", " ", "\[Delta]"}], "+", 
+           SuperscriptBox["\[Delta]", "2"], "+", 
+           RowBox[{"2", " ", "\[Delta]", " ", 
+            RowBox[{"(", 
+             RowBox[{"\[Gamma]", "+", "\[Delta]"}], ")"}], " ", 
+            "\[Sigma]"}]}], ")"}]}]}], ")"}]}]}], ")"}]}]}]], "Output",
+ CellChangeTimes->{3.991122933480979*^9},
+ CellLabel->"Out[40]=",ExpressionUUID->"ebd88f20-668f-4077-8264-347e81d813b0"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"FindInstance", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"disc", "<", "0"}], "&&", 
+    RowBox[{"II", ">", "0"}], "&&", 
+    RowBox[{"II", "<", "1"}], "&&", " ", 
+    RowBox[{
+     RowBox[{"365", "/", "7"}], "<", "\[Alpha]", "<", " ", 
+     RowBox[{"365", "/", "2"}]}], " ", "&&", " ", 
+    RowBox[{
+     RowBox[{"1", "/", "80"}], "<", " ", "\[Mu]", "<", 
+     RowBox[{"1", "/", "40"}]}], " ", "&&", " ", 
+    RowBox[{
+     RowBox[{"1", "/", "5"}], "<", "\[Gamma]", "<", 
+     RowBox[{"1", "/", "2"}]}], " ", "&&", " ", 
+    RowBox[{"104", "<", " ", "\[Beta]", "<", "1000"}], " ", "&&", " ", 
+    RowBox[{
+     RowBox[{"1", "/", "2"}], "<", "\[Delta]", "<", "1"}], "&&", 
+    RowBox[{"0", "<", "\[Sigma]", "<", "1"}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+    "II", ",", "\[Beta]", ",", "\[Alpha]", ",", "\[Mu]", ",", "\[Gamma]", ",",
+      "\[Delta]", ",", "\[Sigma]"}], "}"}], ",", "Reals"}], "]"}]], "Input",
+ CellChangeTimes->{{3.991123015766383*^9, 3.991123015769618*^9}, {
+  3.991123096525633*^9, 3.991123100288307*^9}, {3.9911231417613297`*^9, 
+  3.991123173058631*^9}, {3.991123209799396*^9, 3.9911232106246357`*^9}, {
+  3.991123283971053*^9, 3.991123310622918*^9}, {3.991123386463459*^9, 
+  3.991123510678877*^9}},
+ CellLabel->"In[50]:=",ExpressionUUID->"d24d545e-152f-40b9-84a3-7c588f826fd9"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{"II", "\[Rule]", 
+     FractionBox["1", "2"]}], ",", 
+    RowBox[{"\[Beta]", "\[Rule]", "106"}], ",", 
+    RowBox[{"\[Alpha]", "\[Rule]", 
+     FractionBox["1", "128"]}], ",", 
+    RowBox[{"\[Mu]", "\[Rule]", 
+     FractionBox["1", "64"]}], ",", 
+    RowBox[{"\[Gamma]", "\[Rule]", "1"}], ",", 
+    RowBox[{"\[Delta]", "\[Rule]", 
+     FractionBox["1", "1129"]}], ",", 
+    RowBox[{"\[Sigma]", "\[Rule]", 
+     FractionBox["1", "2"]}]}], "}"}], "}"}]], "Output",
+ CellChangeTimes->{
+  3.991123027831464*^9, 3.9911231032360277`*^9, {3.9911231759040413`*^9, 
+   3.991123206309532*^9}, {3.991123311515572*^9, 3.991123331253786*^9}, {
+   3.99112340029538*^9, 3.991123405983818*^9}},
+ CellLabel->"Out[49]=",ExpressionUUID->"7d822d05-8419-4cbb-9bdc-a364730d6141"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{"FindInstance", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"disc", "<", "0"}], "&&", 
+    RowBox[{"II", ">", "0"}], "&&", 
+    RowBox[{"II", "<", "1"}], "&&", " ", 
+    RowBox[{
+     RowBox[{"365", "/", "7"}], "<", "\[Alpha]", "<", " ", 
+     RowBox[{"365", "/", "2"}]}], " ", "&&", " ", 
+    RowBox[{
+     RowBox[{"1", "/", "80"}], "<", " ", "\[Mu]", "<", 
+     RowBox[{"1", "/", "40"}]}], " ", "&&", " ", 
+    RowBox[{
+     RowBox[{"1", "/", "5"}], "<", "\[Gamma]", "<", 
+     RowBox[{"1", "/", "2"}]}], " ", "&&", " ", 
+    RowBox[{"104", "<", " ", "\[Beta]", "<", "1000"}], " ", "&&", " ", 
+    RowBox[{
+     RowBox[{"1", "/", "2"}], "<", "\[Delta]", "<", "1"}], "&&", 
+    RowBox[{"0", "<", "\[Sigma]", "<", "1"}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+    "II", ",", "\[Beta]", ",", "\[Alpha]", ",", "\[Mu]", ",", "\[Gamma]", ",",
+      "\[Delta]", ",", "\[Sigma]"}], "}"}], ",", "Reals"}], "]"}]], "Input",
+ CellChangeTimes->{{3.991123547898938*^9, 
+  3.991123553660068*^9}},ExpressionUUID->"b443d76a-dcf5-4f4b-bdd3-\
+b4d9c6e45999"],
+
+Cell[BoxData["\[IndentingNewLine]"], "Input",
+ CellChangeTimes->{3.9912032611625233`*^9, 3.991380918604754*^9, 
+  3.99172615979955*^9},ExpressionUUID->"dacf8674-14de-421a-81f4-a8428ce4d213"]
+},
+WindowSize->{Full, Full},
+WindowMargins->{{316, Automatic}, {Automatic, 50}},
+FrontEndVersion->"14.3 for Mac OS X ARM (64-bit) (July 8, 2025)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"adb4fe57-cffd-4598-8ef6-c72be882520f"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[554, 20, 259, 5, 77, "Text",ExpressionUUID->"bcd17530-bbb2-41c2-abca-528666ef8552"],
+Cell[816, 27, 2655, 68, 213, "Input",ExpressionUUID->"f50e7ad5-17ed-4e57-8d89-fcdd4b2f7858"],
+Cell[CellGroupData[{
+Cell[3496, 99, 2003, 53, 335, "Input",ExpressionUUID->"6df9f4d9-0b38-4d43-b57a-f6c5f86e7197"],
+Cell[CellGroupData[{
+Cell[5524, 156, 424, 8, 23, "Print",ExpressionUUID->"c3c8aa62-72d9-43b0-9a2d-9ca1e03c542d"],
+Cell[5951, 166, 1203, 33, 66, "Print",ExpressionUUID->"003eb929-3f7a-4864-95b3-d94761b197e9"],
+Cell[7157, 201, 430, 8, 41, "Print",ExpressionUUID->"5285e900-e5a7-413e-99fa-13a14814923d"],
+Cell[7590, 211, 670, 17, 23, "Print",ExpressionUUID->"6417a0f8-8dc5-46f9-9da8-b6267d45aceb"]
+}, Open  ]]
+}, Open  ]],
+Cell[8287, 232, 223, 7, 77, "Text",ExpressionUUID->"82f7fa32-e9c8-4de0-83ea-fba80a09c95e"],
+Cell[CellGroupData[{
+Cell[8535, 243, 3299, 86, 458, "Input",ExpressionUUID->"7baebe1e-e340-4245-acc0-21a54b5d8fe0"],
+Cell[CellGroupData[{
+Cell[11859, 333, 416, 7, 41, "Print",ExpressionUUID->"de299914-fc4f-4f8d-afd9-20e2a7392392"],
+Cell[12278, 342, 26554, 653, 234, "Print",ExpressionUUID->"66bc5a01-efaa-4602-9f6d-25e57813fb24"],
+Cell[38835, 997, 427, 7, 41, "Print",ExpressionUUID->"8297533a-beed-453a-b663-045c683102a6"],
+Cell[39265, 1006, 24564, 645, 234, "Print",ExpressionUUID->"6e5d2e16-206e-4490-a626-0d969c2785b5"]
+}, Open  ]]
+}, Open  ]],
+Cell[63856, 1655, 404, 9, 55, "Text",ExpressionUUID->"a19e0bf1-2eb4-447d-a14c-12e985c0bce5"],
+Cell[CellGroupData[{
+Cell[64285, 1668, 1392, 32, 131, "Input",ExpressionUUID->"e808e522-8be4-4448-a11a-21f15da6861f"],
+Cell[CellGroupData[{
+Cell[65702, 1704, 206, 4, 41, "Print",ExpressionUUID->"bac0e653-98b9-4039-bbd4-d5620699f131"],
+Cell[65911, 1710, 1183, 31, 24, "Print",ExpressionUUID->"4c1c7b63-fb25-4833-90de-d2728efdcda8"]
+}, Open  ]]
+}, Open  ]],
+Cell[67121, 1745, 142, 3, 33, "Text",ExpressionUUID->"dc7adfba-01f4-4739-80d9-8d7f78b59bd3"],
+Cell[CellGroupData[{
+Cell[67288, 1752, 2904, 78, 315, "Input",ExpressionUUID->"2b5ddeca-5371-4396-9f8d-f91dedba0d10"],
+Cell[CellGroupData[{
+Cell[70217, 1834, 410, 10, 23, "Print",ExpressionUUID->"b55aa6fc-a9dd-4f1c-9f3a-bf2a2c0a07df"],
+Cell[70630, 1846, 461, 11, 23, "Print",ExpressionUUID->"969295bb-6765-4265-96ed-dc60fb98b938"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[71140, 1863, 749, 15, 111, "Input",ExpressionUUID->"891b57a4-3586-48a3-9823-4806b08eff64"],
+Cell[CellGroupData[{
+Cell[71914, 1882, 350, 6, 41, "Print",ExpressionUUID->"71743d5e-8611-4a9f-82cf-617fd2b288b3"],
+Cell[72267, 1890, 13796, 349, 129, "Print",ExpressionUUID->"5034ed19-52a5-4690-94ad-c4f44c96bfb5"]
+}, Open  ]]
+}, Open  ]],
+Cell[86090, 2243, 349, 9, 55, "Text",ExpressionUUID->"294b5f29-9d24-4927-8145-997eba3b9d8b"],
+Cell[CellGroupData[{
+Cell[86464, 2256, 984, 26, 70, "Input",ExpressionUUID->"4230c3db-8723-4ad6-93e9-2c3262a47721"],
+Cell[87451, 2284, 41805, 948, 297, "Print",ExpressionUUID->"912d898f-6ee6-430b-b883-30970ebe9edc"]
+}, Open  ]],
+Cell[129271, 3235, 203, 4, 29, "Input",ExpressionUUID->"685e0c40-d46c-475e-b990-47c529013bad"],
+Cell[CellGroupData[{
+Cell[129499, 3243, 5640, 138, 115, "Input",ExpressionUUID->"41e9cfdf-0fee-473a-9663-b421d8710f25"],
+Cell[135142, 3383, 11682, 273, 135, "Output",ExpressionUUID->"51a258d4-5fe4-4c4a-8f45-d2531fa80042"],
+Cell[146827, 3658, 4217, 117, 57, "Output",ExpressionUUID->"ebd88f20-668f-4077-8264-347e81d813b0"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[151081, 3780, 1325, 29, 29, "Input",ExpressionUUID->"d24d545e-152f-40b9-84a3-7c588f826fd9"],
+Cell[152409, 3811, 826, 20, 46, "Output",ExpressionUUID->"7d822d05-8419-4cbb-9bdc-a364730d6141"]
+}, Open  ]],
+Cell[153250, 3834, 1060, 26, 29, "Input",ExpressionUUID->"b443d76a-dcf5-4f4b-bdd3-b4d9c6e45999"],
+Cell[154313, 3862, 190, 2, 49, "Input",ExpressionUUID->"dacf8674-14de-421a-81f4-a8428ce4d213"]
+}
+]
+*)
+

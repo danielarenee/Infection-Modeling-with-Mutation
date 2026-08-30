@@ -10,19 +10,20 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[     19557,        551]
-NotebookOptionsPosition[     17950,        517]
-NotebookOutlinePosition[     18341,        533]
-CellTagsIndexPosition[     18298,        530]
+NotebookDataLength[     19598,        552]
+NotebookOptionsPosition[     17991,        518]
+NotebookOutlinePosition[     18382,        534]
+CellTagsIndexPosition[     18339,        531]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
 Notebook[{
-Cell[TextData[StyleBox["Equilibria and stability analysis for SIRCmw (with I \
-scaling factor instead of SI)\n\n1. Disease Free Equilibrium",
+Cell[TextData[StyleBox["Equilibria and stability analysis for SIRCmw - \
+Prevalence-driven variant\n\n1. Disease Free Equilibrium",
  FontWeight->"Bold"]], "Text",
- CellChangeTimes->{{3.994644920290247*^9, 
-  3.994644931142714*^9}},ExpressionUUID->"5f20fe0d-5c0e-4cf6-b46b-\
+ CellChangeTimes->{{3.994644920290247*^9, 3.994644931142714*^9}, {
+  3.9967556383902407`*^9, 
+  3.996755644180964*^9}},ExpressionUUID->"5f20fe0d-5c0e-4cf6-b46b-\
 ba7da381f15c"],
 
 Cell[BoxData[
@@ -532,30 +533,28 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[554, 20, 298, 5, 77, "Text",ExpressionUUID->"5f20fe0d-5c0e-4cf6-b46b-ba7da381f15c"],
-Cell[855, 27, 2318, 64, 233, "Input",ExpressionUUID->"e4e1b83a-bdce-446b-afd5-b7164b2ca380"],
+Cell[554, 20, 339, 6, 77, "Text",ExpressionUUID->"5f20fe0d-5c0e-4cf6-b46b-ba7da381f15c"],
+Cell[896, 28, 2318, 64, 233, "Input",ExpressionUUID->"e4e1b83a-bdce-446b-afd5-b7164b2ca380"],
 Cell[CellGroupData[{
-Cell[3198, 95, 1837, 51, 315, "Input",ExpressionUUID->"27fb9028-f28d-4063-93f3-a502af1f42df"],
+Cell[3239, 96, 1837, 51, 315, "Input",ExpressionUUID->"27fb9028-f28d-4063-93f3-a502af1f42df"],
 Cell[CellGroupData[{
-Cell[5060, 150, 196, 4, 23, "Print",ExpressionUUID->"5502995f-0187-4090-ac54-9221884e58f4"],
-Cell[5259, 156, 975, 29, 66, "Print",ExpressionUUID->"f3c0bba5-801a-495d-850a-e99a121bbc52"],
-Cell[6237, 187, 202, 4, 41, "Print",ExpressionUUID->"d307bbc7-f8b4-4a1d-a296-de7dc5d9a5fd"],
-Cell[6442, 193, 442, 13, 23, "Print",ExpressionUUID->"c4b4a519-a1d3-4f81-a3a0-98abf72046df"]
+Cell[5101, 151, 196, 4, 23, "Print",ExpressionUUID->"5502995f-0187-4090-ac54-9221884e58f4"],
+Cell[5300, 157, 975, 29, 66, "Print",ExpressionUUID->"f3c0bba5-801a-495d-850a-e99a121bbc52"],
+Cell[6278, 188, 202, 4, 41, "Print",ExpressionUUID->"d307bbc7-f8b4-4a1d-a296-de7dc5d9a5fd"],
+Cell[6483, 194, 442, 13, 23, "Print",ExpressionUUID->"c4b4a519-a1d3-4f81-a3a0-98abf72046df"]
 }, Open  ]]
 }, Open  ]],
-Cell[6911, 210, 221, 7, 77, "Text",ExpressionUUID->"65c42bfb-467f-4828-bef4-f2c8d142b7db"],
+Cell[6952, 211, 221, 7, 77, "Text",ExpressionUUID->"65c42bfb-467f-4828-bef4-f2c8d142b7db"],
 Cell[CellGroupData[{
-Cell[7157, 221, 3200, 84, 478, "Input",ExpressionUUID->"56026bb4-2b48-4dc4-bc8b-05e9ae219e32"],
+Cell[7198, 222, 3200, 84, 478, "Input",ExpressionUUID->"56026bb4-2b48-4dc4-bc8b-05e9ae219e32"],
 Cell[CellGroupData[{
-Cell[10382, 309, 211, 4, 41, "Print",ExpressionUUID->"9a0842c5-ec34-45c5-b310-ce9137e86296"],
-Cell[10596, 315, 3696, 96, 45, "Print",ExpressionUUID->"673649be-7331-4332-90d1-0b4719873f2b"],
-Cell[14295, 413, 220, 4, 41, "Print",ExpressionUUID->"e82be9b5-920f-4707-8b73-e20e4b55ca14"],
-Cell[14518, 419, 3404, 94, 45, "Print",ExpressionUUID->"04dc32c5-bebd-4ed0-aa98-e1538e8ffb22"]
+Cell[10423, 310, 211, 4, 41, "Print",ExpressionUUID->"9a0842c5-ec34-45c5-b310-ce9137e86296"],
+Cell[10637, 316, 3696, 96, 45, "Print",ExpressionUUID->"673649be-7331-4332-90d1-0b4719873f2b"],
+Cell[14336, 414, 220, 4, 41, "Print",ExpressionUUID->"e82be9b5-920f-4707-8b73-e20e4b55ca14"],
+Cell[14559, 420, 3404, 94, 45, "Print",ExpressionUUID->"04dc32c5-bebd-4ed0-aa98-e1538e8ffb22"]
 }, Open  ]]
 }, Open  ]]
 }
 ]
 *)
-
-(* End of internal cache information *)
 

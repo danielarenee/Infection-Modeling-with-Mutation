@@ -1,28 +1,24 @@
 # Compartmental Epidemiological Models with Infection-Driven Viral Mutation
 
-This repository contains the simulation, bifurcation analysis, numerical continuation, asymptotic series approximations, and plotting code for:
-
-> **"Compartmental Epidemiological Models with Infection-Driven Viral Mutation"**  
-> *Daniela Renée et al.*
-
+This repository contains the simulation, bifurcation analysis, numerical continuation, asymptotic series approximations, and plotting code 
 ---
 
 ## Mathematical Models & Organization
 
-The codebase is organized around two formulations of mutation-driven immune escape coupled to epidemic dynamics:
+The codebase is organized around the two variants of the SIRCm model:
 
-1. **Prevalence-Driven Feedback ($\mu(t) = 1 + \varepsilon I(t)$)** — [`SIRCm_prevalence/`](SIRCm_prevalence/):  
+1. **Prevalence-Driven variant ($\mu(t) = 1 + \varepsilon I(t)$)** — [`SIRCm_prevalence/`](SIRCm_prevalence/):  
    Viral mutation supply and immune escape scale with the fraction of actively infected individuals $I(t)$.
-2. **Transmission-Driven Feedback ($\mu(t) = 1 + \varepsilon S(t)I(t)$)** — [`SIRCm_transmission/`](SIRCm_transmission/):  
-   Mutation escape events scale with transmission encounters $S(t)I(t)$, coupling contact dynamics directly to viral diversification.
+2. **Transmission-Driven variant ($\mu(t) = 1 + \varepsilon S(t)I(t)$)** — [`SIRCm_transmission/`](SIRCm_transmission/):  
+   Mutation escape events scale with transmission encounters $S(t)I(t)$.
 3. **Time Series Dynamics** — [`time_series/`](time_series/):  
-   Unforced multi-regime comparisons and seasonally forced dynamics across temperate ($\beta_0 = 1200, \eta = 0.07$) and tropical ($\beta_0 = 400, \eta = 0.18$) regimes.
+   Time series comparisons and seasonally forced dynamics across temperate ($\beta_0 = 1200, \eta = 0.07$) and tropical ($\beta_0 = 400, \eta = 0.18$) regimes.
 4. **Asymptotic Series Approximations** — [`series_approximations/`](series_approximations/):  
-   Taylor series expansions for small $\varepsilon \to 0$ and perturbation expansions in $u = 1/\varepsilon$ for large $\varepsilon \to \infty$ supporting both model variants.
+   Taylor series expansions for small $\varepsilon \to 0$ and perturbation expansions for large $\varepsilon \to \infty$ supporting both model variants.
 
 ---
 
-## Manuscript Figure Mapping
+## Figure Mapping
 
 Scripts are organized in numbered folders corresponding to the figures in the paper:
 
@@ -89,9 +85,4 @@ All scripts use relative paths and can be run directly from any directory:
 # Example: Generate Figure 02
 python SIRCm_transmission/02_endemic_prevalence_surface/endemic_prevalence_surface.py
 
-# Example: Generate Figure 03
-python SIRCm_prevalence/03_hopf_surface_two_eps/hopf_surface_two_eps.py
-
-# Example: Generate Figure 15 (Seasonal forcing)
-python time_series/seasonal_forcing/plot_timeseries_panels.py
 ```

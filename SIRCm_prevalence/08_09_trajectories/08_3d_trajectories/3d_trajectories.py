@@ -1,10 +1,22 @@
-import os
+#!/usr/bin/env python3
+"""
+3D Trajectories in Phase Space (Prevalence-driven variant)
+
+Simulates and plots 3D phase space trajectories (S, I, R) for the prevalence-driven SIRCm model
+across multiple mutation feedback values (tilde_eps = 0.0, 0.75, 1.0), illustrating the approach
+to stable equilibria and limit cycle oscillations.
+
+OUTPUT: Figure 08
+"""
+
 import sys
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-# Add SIRCmw directory to path to import sircmw_utils
+# Add SIRCm_prevalence root to path
 SCRIPT_DIR = Path(__file__).resolve().parent
 sys.path.append(str(SCRIPT_DIR.parent.parent))
 
@@ -20,19 +32,12 @@ from sircmw_I_utils import (
     BETA0 as beta0
 )
 
-# Reference scaling factor (S0_ref * I0_ref = 0.2 * 0.001) from sircmw_3d_trajectory.ipynb
-# Scaling factor: choose between I_0 (0.001) and S_0 * I_0 (0.0002)
-# scale_factor = 0.0002 # original SI_0 scaling
-scale_factor = 0.001 # new I_0 scaling
+scale_factor = 0.00114321  # SIRC endemic equilibrium I*
 
 TILDE_EPS_LIST = [0.0, 0.75, 1.0]
 
-# Initial conditions for each tilde_eps value in the list
-Y0_LIST = [
-    np.array([0.2, 0.001, 0.499, 0.3]),  # for tilde_eps = 0.0
-    np.array([0.2, 0.001, 0.499, 0.3]),  # for tilde_eps = 0.75
-    np.array([0.2, 0.001, 0.499, 0.3])   # for tilde_eps = 1.0
-]
+# Initial conditions (S, I, R, C)
+Y0 = np.array([0.2, 0.001, 0.499, 0.3])
 
 T_SPAN = (0.0, 100.0)
 
@@ -69,8 +74,8 @@ def run_simulation(tilde_eps, y0, t_span):
 def main():
     print(f"Running simulations for tilde_eps: {TILDE_EPS_LIST}...")
     solutions = {}
-    for te, y0 in zip(TILDE_EPS_LIST, Y0_LIST):
-        t_arr, Y_arr, n_ev = run_simulation(te, y0, T_SPAN)
+    for te in TILDE_EPS_LIST:
+        t_arr, Y_arr, n_ev = run_simulation(te, Y0, T_SPAN)
         solutions[te] = Y_arr
         print(f"  tilde_eps = {te} done. Reseeding events: {n_ev}")
 
@@ -78,18 +83,14 @@ def main():
     axes = []
     
     for i, te in enumerate(TILDE_EPS_LIST):
-        # We specify a 3D projection subplot
         ax = fig.add_subplot(1, len(TILDE_EPS_LIST), i+1, projection='3d')
         axes.append(ax)
         S, I, R, C = solutions[te]
         
-        # Plot trajectory line
         ax.plot(S, I, R, color='tab:blue', lw=1.5, alpha=0.85, label='Trajectory' if i == 0 else None)
         
-        # Plot initial condition
         ax.scatter([S[0]], [I[0]], [R[0]], color='green', s=60, edgecolor='k', zorder=6, label='Initial condition' if i == 0 else None)
         
-        # Get and plot the actual analytical endemic equilibrium (as the Equilibrium red star)
         p_eq = {
             'beta0': beta0,
             'sigma': sigma,
@@ -105,12 +106,10 @@ def main():
             lbl = 'Equilibrium' if (i == 0 and eq_idx == 0) else None
             ax.scatter([S_eq], [I_eq], [R_eq], color='red', marker='*', s=140, edgecolor='k', zorder=8, label=lbl)
         
-        # Clean up label layout to prevent overlapping/crowding
         ax.set_xlabel('S (Susceptible)', labelpad=12)
         ax.set_ylabel('I (Infected)', labelpad=12)
         ax.set_zlabel('R (Recovered)', labelpad=12)
         
-        # Set limits dynamically based on data range with 5% padding
         S_range = S.max() - S.min()
         I_range = I.max() - I.min()
         R_range = R.max() - R.min()
@@ -123,15 +122,12 @@ def main():
         ax.set_ylim(I.min() - I_pad, I.max() + I_pad)
         ax.set_zlim(R.min() - R_pad, R.max() + R_pad)
         
-        # Use MaxNLocator to dynamically select clean, uncrowded tick positions
         ax.xaxis.set_major_locator(plt.MaxNLocator(4))
         ax.yaxis.set_major_locator(plt.MaxNLocator(3))
         ax.zaxis.set_major_locator(plt.MaxNLocator(4))
         
-        # Optimize view angle for perspective clarity
         ax.view_init(elev=22, azim=-45)
         
-        # Text box in the right top corner for epsilon tilde inside the panel
         ax.text2D(0.95, 0.95, f'$\\tilde{{\\epsilon}} = {te}$', transform=ax.transAxes, 
                   ha='right', va='top', fontsize=13,
                   bbox=dict(boxstyle='round,pad=0.4', facecolor='white', edgecolor='lightgray', alpha=0.9))
@@ -139,10 +135,8 @@ def main():
         ax.grid(True, alpha=0.2)
         
     plt.tight_layout()
-    # Adjust spacing between plots to prevent labels from overlapping
     plt.subplots_adjust(wspace=0.35, left=0.05, right=0.95, top=0.85, bottom=0.1)
     
-    # Legend outside the boxes, on top of the subplots
     handles, labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, labels, loc='upper center', ncol=3, frameon=True, fontsize=13.5, markerscale=1.2, handlelength=2.2)
     

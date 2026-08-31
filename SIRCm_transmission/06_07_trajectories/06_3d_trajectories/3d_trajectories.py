@@ -1,9 +1,12 @@
+#!/usr/bin/env python3
 """
-Generates 3D trajectory plots (S, I, R axes) of the SIRCmw transmission model
-for multiple values of tilde_eps.
+3D Trajectories in Phase Space (Transmission-driven variant)
 
-Extracted from sircmw_3d_trajectory.ipynb.
-Equivalent to SIRCm_prevalence/equilibria_and_stability/plotting/plot_3d_trajectories.py
+Simulates and plots 3D phase space trajectories (S, I, R) for the transmission-driven SIRCm model
+across multiple mutation feedback values (tilde_eps = 0.5, 1.5, 1.7), illustrating the approach
+to endemic equilibria and limit cycle oscillations.
+
+OUTPUT: Figure 06
 """
 import sys
 import numpy as np
@@ -26,18 +29,13 @@ from sircmw_utils import (
     BETA0 as beta0
 )
 
-# Scaling factor: SI_ref = S0_ref * I0_ref (as used in the original notebook)
-S0_ref, I0_ref = 0.2, 0.001
-scale_factor = S0_ref * I0_ref  # = 0.0002
+scale_factor = 0.0002
+#045191  # SIRC endemic equilibrium S* * I*
 
 TILDE_EPS_LIST = [0.5, 1.5, 1.7]
 
-# Initial conditions for each tilde_eps value
-Y0_LIST = [
-    np.array([0.2, 0.001, 0.499, 0.3]),  # for tilde_eps = 0.5
-    np.array([0.2, 0.001, 0.499, 0.3]),  # for tilde_eps = 1.5
-    np.array([0.2, 0.001, 0.499, 0.3])   # for tilde_eps = 1.7
-]
+# Initial conditions (S, I, R, C)
+Y0 = np.array([0.2, 0.001, 0.499, 0.3])
 
 T_SPAN = (0.0, 100.0)
 OUTPUT_FILENAME = "06_3d_trajectories.png"
@@ -72,8 +70,8 @@ def run_simulation(tilde_eps, y0, t_span):
 def main():
     print(f"Running simulations for tilde_eps: {TILDE_EPS_LIST}...")
     solutions = {}
-    for te, y0 in zip(TILDE_EPS_LIST, Y0_LIST):
-        t_arr, Y_arr, n_ev = run_simulation(te, y0, T_SPAN)
+    for te in TILDE_EPS_LIST:
+        t_arr, Y_arr, n_ev = run_simulation(te, Y0, T_SPAN)
         solutions[te] = Y_arr
         print(f"  tilde_eps = {te} done. Reseeding events: {n_ev}")
 

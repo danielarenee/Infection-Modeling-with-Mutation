@@ -1,3 +1,8 @@
+"""
+Utility functions for the transmission-driven SIRCm model (mu = 1 + eps * S * I).
+Provides ODE derivatives, analytical Jacobians, polynomial equilibrium solvers, and reseeding integrators.
+"""
+
 import numpy as np
 
 # Baseline model parameters (from Casagrandi)
@@ -7,43 +12,40 @@ DELTA = 1.0 / 1.61
 GAMMA = 0.35
 SIGMA = 0.07874
 BETA0 = 600.0
-SI_0 = 0.000178
+SI_0 = 0.0002045191  # SIRC endemic equilibrium S* * I* at beta0=600
+SI_STAR = 0.0002045191
 EQ_TOL = 1e-9
 
+
 def sircmw(t, y, p):
-    """ 
-    SIRCmw model with optional seasonal forcing
-    """
+    """Computes ODE derivatives for transmission-driven SIRCm with optional seasonal forcing."""
     S, I, R, C = y
     beta0 = p.get('beta0', BETA0)
     eta = p.get('eta', 0.0)
-    
-    # seasonally forced beta
+
+    # Seasonally forced contact rate
     b = beta0 * (1.0 + eta * np.cos(2.0 * np.pi * t))
-    
-    # extract eps1 and eps2 (default to a common eps)
+
     eps = p.get('eps', 0.0)
     eps1 = p.get('eps1', eps)
     eps2 = p.get('eps2', eps)
-    
+
     sigma = p.get('sigma', SIGMA)
     mu = p.get('mu', MU)
     alpha = p.get('alpha', ALPHA)
     delta = p.get('delta', DELTA)
     gamma = p.get('gamma', GAMMA)
-    
+
     dS = mu * (1.0 - S) - b * S * I + (1.0 + eps2 * S * I) * gamma * C
     dI = b * S * I + sigma * b * C * I - (mu + alpha) * I
     dR = (1.0 - sigma) * b * C * I + alpha * I - mu * R - (1.0 + eps1 * S * I) * delta * R
     dC = (1.0 + eps1 * S * I) * delta * R - b * C * I - mu * C - (1.0 + eps2 * S * I) * gamma * C
-    
+
     return np.array([dS, dI, dR, dC])
 
+
 def sircmw_jacobian(y, eps1, eps2=None, p=None):
-    """ 
-    Analytical Jacobian of SIRCmw (supports distinct eps1 and eps2).
-    When eps2 is None, defaults to eps1 (symmetric case).
-    """
+    """Computes the analytical 4x4 Jacobian matrix for the transmission-driven SIRCm model."""
     if eps2 is None:
         eps2 = eps1
     S, I, R, C = y
@@ -55,7 +57,7 @@ def sircmw_jacobian(y, eps1, eps2=None, p=None):
     alpha = p.get('alpha', ALPHA)
     delta = p.get('delta', DELTA)
     gamma = p.get('gamma', GAMMA)
-    
+
     return np.array([
         [-mu - b*I + eps2*I*gamma*C,      -b*S + eps2*S*gamma*C,                         0.0,                              gamma*(1.0 + eps2*S*I)           ],
         [b*I,                              b*S + sigma*b*C - (mu + alpha),                0.0,                              sigma*b*I                         ],
@@ -63,10 +65,9 @@ def sircmw_jacobian(y, eps1, eps2=None, p=None):
         [eps1*I*delta*R - eps2*I*gamma*C,  eps1*S*delta*R - b*C - eps2*S*gamma*C,         delta*(1.0+eps1*S*I),             -(b*I + mu + gamma*(1.0+eps2*S*I))],
     ])
 
+
 def poly_coeffs(beta, mu, alpha, gamma, delta, eps, sigma):
-    """
-    Coefficients of the 4th-degree characteristic polynomial in I for SIRCmw.
-    """
+    """Computes coefficients of the 4th-degree characteristic polynomial in I for endemic equilibria."""
     c0 = (
         beta**2 * mu**2
         * (alpha - beta + mu)
@@ -152,7 +153,7 @@ def poly_coeffs(beta, mu, alpha, gamma, delta, eps, sigma):
         + alpha * (
             - 3*gamma**2*delta*eps**2*mu**3
             + beta**4 * (gamma + delta + 3*mu) * (sigma - 1) * (gamma - delta*sigma)
-            + 2*beta*gamma*delta*eps**2*mu**2 * (gamma + gamma*sigma + delta*sigma)
+            + 2*beta*gamma*delta*eps**2*mu**2
             - beta**2 * gamma * eps * mu * (
                 4*gamma*mu
                 + delta*mu*(4 - 9*sigma)
@@ -168,15 +169,9 @@ def poly_coeffs(beta, mu, alpha, gamma, delta, eps, sigma):
     )
 
     c1 = -beta * mu * (
-        beta**3 * (sigma - 1) * (gamma - delta*sigma) * (
-            gamma*(delta + mu) + mu*(delta + 2*mu + delta*sigma)
-        )
-        + alpha**2 * gamma * eps * mu * (
-            gamma*(mu - delta*(sigma - 2)) + delta*(mu - delta*sigma - 2*mu*sigma)
-        )
-        + gamma * eps * mu**3 * (
-            gamma*(mu - delta*(sigma - 2)) + delta*(mu - delta*sigma - 2*mu*sigma)
-        )
+        beta**3 * (sigma - 1) * (gamma - delta*sigma) * (gamma*(delta + mu) + mu*(delta + 2*mu + delta*sigma))
+        + alpha**2 * gamma * eps * mu * (gamma*(mu - delta*(sigma - 2)) + delta*(mu - delta*sigma - 2*mu*sigma))
+        + gamma * eps * mu**3 * (gamma*(mu - delta*(sigma - 2)) + delta*(mu - delta*sigma - 2*mu*sigma))
         - beta * eps * mu**2 * (
             - delta**2*mu*(sigma - 1)*sigma
             + gamma**2*(2*delta + mu + mu*sigma)
@@ -204,60 +199,44 @@ def poly_coeffs(beta, mu, alpha, gamma, delta, eps, sigma):
 
     return [c0, c1, c2, c3, c4]
 
-def recover_equilibrium(I_star, eps, p=None):
-    """
-    Given I* (a real root of the polynomial) and eps, return (S*, I*, R*, C*)
-    """
-    if p is None:
-        p = {}
-    beta = p.get('beta0', BETA0)
-    sigma = p.get('sigma', SIGMA)
-    mu = p.get('mu', MU)
-    alpha = p.get('alpha', ALPHA)
-    delta = p.get('delta', DELTA)
-    gamma = p.get('gamma', GAMMA)
-    
+
+def recover_equilibrium(I_star, beta, mu, alpha, gamma, delta, eps, sigma):
+    """Reconstructs the full equilibrium state (S*, I*, R*, C*) given a polynomial root I*."""
     A = (mu + alpha) / beta
     qa = -eps * sigma * gamma * I_star
-    qb =  mu*sigma + beta*sigma*I_star + gamma + eps*gamma*A*I_star
-    qc =  mu*(1.0 - A) - beta*A*I_star
+    qb =  mu * sigma + beta * sigma * I_star + gamma + eps * gamma * A * I_star
+    qc =  mu * (1.0 - A) - beta * A * I_star
 
-    if abs(qa) < 1e-14:       
+    if abs(qa) < 1e-14:
         C_candidates = [-qc / qb] if abs(qb) > 1e-14 else []
     else:
-        disc = qb**2 - 4.0*qa*qc
+        disc = qb**2 - 4.0 * qa * qc
         if disc < 0.0:
             return None
         sqd = np.sqrt(disc)
-        C_candidates = [(-qb + sqd) / (2.0*qa), (-qb - sqd) / (2.0*qa)]
+        C_candidates = [(-qb + sqd) / (2.0 * qa), (-qb - sqd) / (2.0 * qa)]
 
-    best, best_res = None, np.inf
+    best_eq = None
+    best_res = np.inf
     for C in C_candidates:
         if not (-EQ_TOL <= C <= 1.0 + EQ_TOL):
             continue
         C = np.clip(C, 0.0, 1.0)
-        
         S = A - sigma * C
-        if not (-EQ_TOL <= S <= 1.0 + EQ_TOL):
+        R = 1.0 - I_star - S - C
+        if not (-EQ_TOL <= S <= 1.0 + EQ_TOL and -EQ_TOL <= R <= 1.0 + EQ_TOL):
             continue
         S = np.clip(S, 0.0, 1.0)
-        
-        R = 1.0 - I_star - S - C
-        if not (-EQ_TOL <= R <= 1.0 + EQ_TOL):
-            continue
         R = np.clip(R, 0.0, 1.0)
-        
-        res = abs((1.0 - sigma) * beta * C * I_star + alpha * I_star
-                  - R * (mu + (1.0 + eps * S * I_star) * delta))
+        res = abs((1.0 - sigma) * beta * C * I_star + alpha * I_star - R * (mu + (1.0 + eps * S * I_star) * delta))
         if res < best_res:
-            best_res, best = res, (S, I_star, R, C)
+            best_res = res
+            best_eq = (S, I_star, R, C)
+    return best_eq
 
-    return best
 
 def plot_sircmw_timeseries(y0=None, p=None, years=100, save_path=None, show=True):
-    """
-    Simulate and plot the SIRCmw model time series
-    """
+    """Simulates and plots the SIRCm model time series using SciPy's DOP853 integrator."""
     from scipy.integrate import solve_ivp
     import matplotlib.pyplot as plt
 
@@ -265,22 +244,27 @@ def plot_sircmw_timeseries(y0=None, p=None, years=100, save_path=None, show=True
         y0 = np.array([0.2, 0.001, 0.499, 0.3])
     if p is None:
         p = {'beta0': BETA0, 'sigma': SIGMA}
-        
+
     sol = solve_ivp(sircmw, (0, years), y0, args=(p,),
-                     method='DOP853',
-                     rtol=1e-6, atol=1e-9,
-                     dense_output=True)
-                     
+                    method='DOP853',
+                    rtol=1e-6, atol=1e-9,
+                    dense_output=True)
+
     t = sol.t
     I = sol.y[1]
-    
+
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.plot(t, I, linewidth=1, color='r')
     ax.set_xlabel('Time (years)')
     ax.set_ylabel('Prevalence I(t)')
     beta0 = p.get('beta0', BETA0)
     eps = p.get('eps', 0.0)
-    ax.set_title(f'SIRCmw prevalence (β₀={beta0}, eps={eps:.4f}, {years} yrs)')
+    eps1 = p.get('eps1', eps)
+    eps2 = p.get('eps2', eps)
+    if 'eps1' in p or 'eps2' in p:
+        ax.set_title(f'SIRCmw (β₀={beta0}, eps1={eps1*SI_0:.4f}, eps2={eps2*SI_0:.4f}, {years} yrs)')
+    else:
+        ax.set_title(f'SIRCmw (β₀={beta0}, eps={eps:.4f}, {years} yrs)')
     ax.grid(True, alpha=0.3)
     plt.tight_layout()
     if save_path:
@@ -290,16 +274,18 @@ def plot_sircmw_timeseries(y0=None, p=None, years=100, save_path=None, show=True
         plt.show()
     return sol
 
+
 def step(f, t_n, y_n, h, params):
-    """ manual RK4 step """
+    """Performs a single fixed-step Runge-Kutta 4th order (RK4) integration step."""
     k1 = h * f(t_n, y_n, params)
     k2 = h * f(t_n + h / 2, y_n + k1 / 2, params)
     k3 = h * f(t_n + h / 2, y_n + k2 / 2, params)
     k4 = h * f(t_n + h, y_n + k3, params)
     return y_n + (1.0 / 6.0) * (k1 + 2.0 * k2 + 2.0 * k3 + k4)
 
+
 def solve_rk4(f, y0, t_span, h, params):
-    """ manual RK4 solver """
+    """Integrates an ODE system from t_start to t_end using fixed-step RK4."""
     t_start, t_end = t_span
     N_steps = int(np.round((t_end - t_start) / h))
     t_arr = np.linspace(t_start, t_end, N_steps + 1)
@@ -309,8 +295,9 @@ def solve_rk4(f, y0, t_span, h, params):
         y_arr[n + 1] = step(f, t_arr[n], y_arr[n], h, params)
     return t_arr, y_arr
 
+
 def _rk4_mean_endemic(f, y0, p, T_years, h, avg_years):
-    """ Returns mean I over the last avg_years of an RK4 simulation """
+    """Computes the time-averaged infected fraction over the trailing avg_years of an RK4 simulation."""
     N_total = int(np.round(T_years / h))
     N_avg   = int(np.round(avg_years / h))
     t = 0.0
@@ -327,43 +314,41 @@ def _rk4_mean_endemic(f, y0, p, T_years, h, avg_years):
             I_sum += y[1]
     return I_sum / N_avg
 
+
 def beta_t(t, beta0, eta):
-    """ Seasonally forced beta0 """
+    """Computes the seasonally forced contact rate beta(t) = beta0 * (1 + eta * cos(2*pi*t))."""
     return beta0 * (1.0 + eta * np.cos(2.0 * np.pi * t))
 
+
 def infection_eigvec(y, t, p):
-    """ Leading eigenvector of the infection subspace (used to reseed when I is near 0) """
+    """Computes the leading eigenvector of the infection subspace for reseeding near extinction."""
     S, _, R, C = y
     beta0 = p.get('beta0', BETA0)
     eta = p.get('eta', 0.0)
     b = beta_t(t, beta0, eta)
-    
-    eps1 = p.get('eps1', p.get('eps', 0.0))
-    eps2 = p.get('eps2', p.get('eps', 0.0))
-    
+    eps = p.get('eps', 0.0)
     sigma = p.get('sigma', SIGMA)
     mu = p.get('mu', MU)
     alpha = p.get('alpha', ALPHA)
     delta = p.get('delta', DELTA)
     gamma = p.get('gamma', GAMMA)
-    
+
     lam = b * S + sigma * b * C - (mu + alpha)
-    a_SI = -b * S + eps2 * S * gamma * C
-    a_RI = (1.0 - sigma) * b * C + alpha - eps1 * S * delta * R
-    a_CI = eps1 * S * delta * R - b * C - eps2 * S * gamma * C
-    
+    a_SI = -b * S + eps * S * gamma * C
+    a_RI = (1.0 - sigma) * b * C + alpha - eps * S * delta * R
+    a_CI = eps * S * delta * R - b * C - eps * S * gamma * C
+
     vR = a_RI / (mu + delta + lam)
     vC = (a_CI + delta * vR) / (mu + gamma + lam)
     vS = (a_SI + gamma * vC) / (mu + lam)
     return np.array([vS, 1.0, vR, vC]), lam
 
+
 def integrate_with_reseeding(rhs, t_span, y0, p, *, threshold=1e-15,
                               I_seed=1e-14, max_events=10000, **solver_kw):
-    """
-    Integrate ODE system; reseed along infection eigenvector whenever I < threshold
-    """
+    """Integrates ODEs with automatic reseeding along the infection eigenvector whenever I drops below threshold."""
     from scipy.integrate import solve_ivp
-    
+
     t0, tf = t_span
 
     def hit_floor(t, y, p):
@@ -400,12 +385,9 @@ def integrate_with_reseeding(rhs, t_span, y0, p, *, threshold=1e-15,
     t_arr, idx = np.unique(t_arr, return_index=True)
     return t_arr, Y_arr[:, idx], n_ev
 
+
 def get_algebraic_equilibria(tilde_eps, p=None):
-    """
-    Find all physically valid endemic equilibria (S*, I*, R*, C*) algebraically
-    for a given tilde_eps by finding roots of the characteristic polynomial
-    Returns a list of tuples: [(S*, I*, R*, C*), ...]
-    """
+    """Finds all physically valid endemic equilibria algebraically by solving the 4th-degree polynomial in I."""
     if p is None:
         p = {}
     beta = p.get('beta0', BETA0)
@@ -415,27 +397,26 @@ def get_algebraic_equilibria(tilde_eps, p=None):
     delta = p.get('delta', DELTA)
     sigma = p.get('sigma', SIGMA)
     si_0 = p.get('si_0', SI_0)
-    
+
     eps = tilde_eps / si_0
     coeffs = poly_coeffs(beta, mu, alpha, gamma, delta, eps, sigma)
     roots = np.polynomial.polynomial.polyroots(coeffs)
-    
-    # Keep real roots in (0, 1]
+
     valid_I = sorted({round(r.real, 8)
                       for r in roots
                       if abs(r.imag) < 1e-6 and 0.0 < r.real <= 1.0})
-                      
+
     equilibria = []
     for I_star in valid_I:
-        eq = recover_equilibrium(I_star, eps, p)
+        eq = recover_equilibrium(I_star, beta, mu, alpha, gamma, delta, eps, sigma)
         if eq is not None:
             equilibria.append(eq)
-            
+
     return equilibria
 
 
 def get_C(I, eps2, S0, beta0, gamma=GAMMA, sigma=SIGMA, mu=MU):
-    """Solves the quadratic equation for C given I (supports asymmetric eps2)."""
+    """Solves the quadratic equation for cross-immune compartment C given I (supports asymmetric eps2)."""
     A = -eps2 * gamma * sigma * I
     B = gamma * (1.0 + eps2 * I * S0) + sigma * (beta0 * I + mu)
     D = mu * (1.0 - S0) - beta0 * I * S0
@@ -455,7 +436,7 @@ def get_C(I, eps2, S0, beta0, gamma=GAMMA, sigma=SIGMA, mu=MU):
 
 
 def get_endemic_roots(eps1, eps2, beta0, mu=MU, alpha=ALPHA, delta=DELTA, gamma=GAMMA, sigma=SIGMA):
-    """Finds all physical endemic equilibria via 1D algebraic reduction (supports eps1 != eps2)."""
+    """Finds all physical endemic equilibria via 1D algebraic reduction and Brent's root-finding (supports eps1 != eps2)."""
     from scipy.optimize import brentq
     S0 = (mu + alpha) / beta0
 
@@ -495,6 +476,3 @@ def get_endemic_roots(eps1, eps2, beta0, mu=MU, alpha=ALPHA, delta=DELTA, gamma=
         except ValueError:
             pass
     return roots
-
-
-

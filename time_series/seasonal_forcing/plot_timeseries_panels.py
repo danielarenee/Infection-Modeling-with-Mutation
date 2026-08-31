@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """
-Side-by-side SIRC vs SIRCm (prevalence-driven) comparison under seasonal forcing
-Left panel  : Regime 1 (e.g., β0 = 1200, η = 0.07, short time window in months)
-Right panel : Regime 2 (e.g., β0 = 400,  η = 0.18, multi-year window in years)
+Side-by-side SIRC vs SIRCm comparison under seasonal forcing
+
+Plots the comparison of the time series of the SIRCm prevalence-driven variant vs 
+the standard SIRC baseline, with parameter values corresponding to temperate and
+tropical regimes. 
+
+OUTPUT: Figures 15, 17, 18, 19 and 20
 """
 
 import sys
@@ -50,14 +54,14 @@ Y0 = np.array([0.20, 0.001, 0.499, 0.30])
 
 # --- Default feedback values to compare (list of tilde_eps) 
 # You can set 1 value [0.3], or multiple e.g. [0.2, 0.5, 0.8]
-TILDE_EPS_VALUES = [0.3]
+TILDE_EPS_VALUES = [1,2,3,4,5,6,7,8,9,10]
 
 # --- Left Panel Configuration 
 LEFT = dict(
     BETA0            = 1200.0,   # Contact rate
     ETA              = 0.07,     # Seasonal forcing amplitude
     YEARS            = 100,      # Total integration duration (years)
-    PLOT_YEARS       = 1,        # Years to display in the plot (<=1 uses months)
+    PLOT_YEARS       = 10,        # Years to display in the plot (<=1 uses months)
     TILDE_EPS_VALUES = None,     # None = use global TILDE_EPS_VALUES, or custom list
 )
 
@@ -66,7 +70,7 @@ RIGHT = dict(
     BETA0            = 400.0,    # Contact rate
     ETA              = 0.18,     # Seasonal forcing amplitude
     YEARS            = 100,      # Total integration duration (years)
-    PLOT_YEARS       = 20,       # Years to display in the plot
+    PLOT_YEARS       = 10,       # Years to display in the plot
     TILDE_EPS_VALUES = None,     # None = use global TILDE_EPS_VALUES, or custom list
 )
 
@@ -185,7 +189,7 @@ def main():
     t_s_R, I_s_R, mwi_R = integrate_panel(RIGHT)
 
     fig = plt.figure(figsize=(13, 5), dpi=300)
-    gs  = gridspec.GridSpec(1, 2, width_ratios=[1, 1.6],
+    gs  = gridspec.GridSpec(1, 2, width_ratios=[1, 1],
                             wspace=0.30, left=0.07, right=0.97,
                             top=0.82, bottom=0.13)
     ax_L = fig.add_subplot(gs[0])

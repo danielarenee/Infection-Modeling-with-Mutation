@@ -1,12 +1,18 @@
+#!/usr/bin/env python3
 """
-Script to recreate FIGURE 5
+Jacobian eigenvalue spectrum exploration (Transmission-driven variant)
 
-Tracks the real and imaginary components of the eigenvalues of the Jacobian 
- of the SIRCmw model at the endemic equilibrium for a range of tilde_eps
+Tracks the real and imaginary components of the eigenvalues of the Jacobian matrix
+at the endemic equilibrium across a continuum of feedback values (tilde_eps) for the
+transmission-driven SIRCm model.
+
+OUTPUT: Figure 05
 """
 
 import sys
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from pathlib import Path
 from scipy.integrate import solve_ivp
@@ -68,8 +74,8 @@ ax1.set_title(fr'Full Jacobian Spectrum ($\beta_0={beta0}$)', fontsize=13)
 ax1.legend(fontsize=9, ncol=4)
 ax1.grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig(Path(__file__).parent / "05_eigenvalues_exploration.png", dpi=150)
-plt.show()
+plt.savefig(Path(__file__).parent / "05_eigenvalues_exploration.png", dpi=300)
+plt.close()
 
 # test simulations
 

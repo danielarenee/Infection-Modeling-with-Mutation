@@ -1,8 +1,11 @@
+#!/usr/bin/env python3
 """
-Generates phase portraits (SI plane) of the SIRCmw transmission model
-for multiple values of tilde_eps, using integrated flow lines.
+Phase Portraits in (S, I) Plane (Transmission-driven variant)
 
-Extracted from sircmw_phase_portrait.ipynb.
+Generates phase portraits in the (S, I) projection for the transmission-driven SIRCm model
+across multiple values of tilde_eps (0.5, 1.5, 1.7) using flow line integrations and nullclines.
+
+OUTPUT: Figure 07
 """
 import sys
 import numpy as np
@@ -27,9 +30,7 @@ from sircmw_utils import (
     BETA0 as beta0
 )
 
-# Scaling: SI_ref = S0_ref * I0_ref (from original notebook)
-S0_ref, I0_ref = 0.2, 0.001
-scale_factor = S0_ref * I0_ref  # = 0.0002
+scale_factor = 0.0002045191  # SIRC endemic equilibrium S* * I*
 
 TILDE_EPS_LIST = [0.5, 1.5, 1.7]
 

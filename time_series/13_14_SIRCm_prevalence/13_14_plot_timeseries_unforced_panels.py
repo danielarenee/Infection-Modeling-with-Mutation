@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """
-SIRC vs. SIRCm unforced time series comparison
+Unforced time series dynamics and limit cycle comparisons
 
-Plots unforced (η = 0) SIRC vs SIRCm under multiple feedback values (tilde_eps).
-Allows selecting between prevalence-driven and transmission-driven variants at the top.
+Plots unforced (η = 0) SIRC vs SIRCm prevalence dynamics across multiple feedback values (tilde_eps),
+illustrating the emergence of damped oscillations, limit cycle oscillations, and regime transitions.
+Supports selecting between prevalence-driven and transmission-driven variants.
 
+OUTPUT: Figures 13 and 14
 """
 
 import sys
@@ -24,7 +26,7 @@ from scipy.integrate import solve_ivp
 #   'prevalence'   : Prevalence-driven variant (1 + eps * I)
 #   'transmission' : Transmission/infection-driven variant (1 + eps * S * I)
 # =============================================================================
-MODEL_VARIANT = 'prevalence'
+MODEL_VARIANT = 'transmission'
 
 # -- Path & Module imports based on selected variant --------------------------
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -84,9 +86,9 @@ def get_scale_factor(beta_val):
 # --- Panels Configuration 
 # Configure feedback value (TILDE_EPS) and displayed time window (PLOT_YEARS) per panel:
 PANELS = [
-    dict(TILDE_EPS=0.25, PLOT_YEARS=20.0),
-    dict(TILDE_EPS=0.75, PLOT_YEARS=20.0),
-    dict(TILDE_EPS=1, PLOT_YEARS=20.0),
+    dict(TILDE_EPS=0.25, PLOT_YEARS=25.0),
+    dict(TILDE_EPS=1.57, PLOT_YEARS=10.0),
+    dict(TILDE_EPS=1.59, PLOT_YEARS=10.0),
 ]
 
 # --- Initial conditions (S, I, R, C) 
@@ -96,20 +98,8 @@ Y0 = np.array([0.20, 0.001, 0.499, 0.30])
 SOLVER_KW = dict(method='DOP853', rtol=1e-6, atol=1e-9, max_step=1/365)
 
 # --- Colors 
-COLOR_SIRC = '#E64B35'
-BLUE_LIGHT = '#87bce6'         
-BLUE_BASE  = '#1f77b4'         
-BLUE_DARK  = '#114467'        
-
-
-def get_blue_gradient(n):
-    """Generate n shades of blue centered around matplotlib blue."""
-    if n == 1:
-        return [BLUE_BASE]
-    cmap = mcolors.LinearSegmentedColormap.from_list(
-        'sircm_blues', [BLUE_LIGHT, BLUE_BASE, BLUE_DARK]
-    )
-    return [mcolors.to_hex(cmap(i / (n - 1))) for i in range(n)]
+COLOR_SIRC  = '#E64B35'
+COLOR_SIRCM = '#1f77b4'
 
 
 def main():
@@ -125,14 +115,12 @@ def main():
     if num_panels == 1:
         axs = [axs]
 
-    blues = get_blue_gradient(num_panels)
-
     for i, p_cfg in enumerate(PANELS):
         ax = axs[i]
         te = p_cfg['TILDE_EPS']
         pyrs = p_cfg['PLOT_YEARS']
         eps = te / scale_factor
-        col = blues[i]
+        col = COLOR_SIRCM
         t_span = (0.0, pyrs)
 
         # 2a. Simulate SIRC baseline for this panel's time span
@@ -208,7 +196,7 @@ def main():
     # 3. Global shared legend above panels
     legend_handles = [
         Line2D([0], [0], color=COLOR_SIRC, linewidth=1.8, label=r'SIRC ($\varepsilon = 0$)'),
-        Line2D([0], [0], color=BLUE_BASE, linewidth=1.8, label=VARIANT_LABEL)
+        Line2D([0], [0], color=COLOR_SIRCM, linewidth=1.8, label=VARIANT_LABEL)
     ]
     fig.legend(
         handles=legend_handles,

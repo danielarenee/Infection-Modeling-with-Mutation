@@ -1,15 +1,18 @@
+#!/usr/bin/env python3
 """
-Computes the endemic equilibrium and stability of the SIRC model with I-feedback for a grid of parameters eps1 and eps2 
-using a logarithmic scale + 0 to cover several orders of magnitude.
-Solving for the reduced equation in I and evaluating stability using the Jacobian.
+Prevalence roots sweep (Prevalence-driven variant)
+
+Computes the endemic equilibrium and local stability of the prevalence-driven SIRCm model
+over a logarithmic parameter grid of (eps1, eps2) by solving the polynomial reduction in I.
+Saves the results to 'prevalence_roots_results.npz' for Figure 16 plotting.
 """
 
 import sys
 import numpy as np
 from pathlib import Path
 
-# Add SIRCmw_I root directory to path
-sys.path.append(str(Path(__file__).parent.parent.parent))
+# Add SIRCm_prevalence directory to path
+sys.path.append(str(Path(__file__).parent.parent))
 
 from sircmw_I_utils import (
     SI_0,
@@ -19,7 +22,7 @@ from sircmw_I_utils import (
 
 # contact rate (consistent with log_scale sweep = 600)
 beta0 = 700
-scale_factor = SI_0 # = 0.001 for I-feedback model
+scale_factor = SI_0  # = 0.00114321 (SIRC endemic equilibrium I*)
 
 def run_one_root(relative_eps1, relative_eps2):
     """Computes endemic prevalence and stability for a single parameter pair"""

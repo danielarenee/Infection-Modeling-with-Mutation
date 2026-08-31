@@ -1,8 +1,11 @@
+#!/usr/bin/env python3
 """
-Generates phase portraits (SI plane) of the SIRCmw_I prevalence model
-for multiple values of tilde_eps, using integrated flow lines.
+Phase Portraits in (S, I) Plane (Prevalence-driven variant)
 
-Extracted from sircmw_phase_portrait.ipynb.
+Generates phase portraits in the (S, I) projection for the prevalence-driven SIRCm model
+across multiple values of tilde_eps (0.0, 1.0, 2.0)
+
+OUTPUT: Figure 09
 """
 import sys
 import numpy as np
@@ -28,12 +31,7 @@ from sircmw_I_utils import (
 )
 
 TILDE_EPS_LIST = [0.0, 1.0, 2.0]
-
-# Scaling factor: dynamically computed as I* at tilde_eps = 0
-p_base = {'beta0': beta0, 'sigma': sigma, 'mu': mu, 'alpha': alpha,
-          'delta': delta, 'gamma': gamma, 'si_0': 1.0}
-base_eqs = get_algebraic_equilibria(0.0, p_base)
-scale_factor = [eq for eq in base_eqs if eq[1] > 1e-5][0][1]  # I*_0
+scale_factor = 0.00114321  # SIRC endemic equilibrium I*
 
 Y0_LISTS = [
     np.array([0.2, 0.001, 0.499, 0.3]),

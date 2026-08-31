@@ -1,18 +1,24 @@
+#!/usr/bin/env python3
 """
-Generates a 3-panel figure for the SIRCmw_I (prevalence) model in the (eps1, eps2) parameter space:
-  - Left panel:   3D Hopf surface with axes (eps2, beta0, eps1) from continuation data.
-  - Middle panel: 2D stability slice at beta0 = 200.
-  - Right panel:  2D stability slice at beta0 = 2000.
+Hopf bifurcation surface and 2D stability slices (Prevalence-driven variant)
 
-Output: 03_hopf_surface_two_eps.png  (Figure 03 in the paper)
+Generates a 3-panel figure for the prevalence-driven SIRCm model in (eps1, eps2) space:
+- Left panel: 3D Hopf bifurcation surface in (eps1, eps2, beta0) space from continuation data.
+- Middle panel: 2D stability slice in the (eps1, eps2) plane at SLICE_BETA_1.
+- Right panel: 2D stability slice in the (eps1, eps2) plane at SLICE_BETA_2.
+
+OUTPUT: Figure 03
 """
+
 import sys
-import pandas as pd
+from pathlib import Path
 import numpy as np
+import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import matplotlib.patches as mpatches
-from pathlib import Path
 from scipy.interpolate import interp1d
 from scipy.ndimage import gaussian_filter
 from concurrent.futures import ProcessPoolExecutor
@@ -21,26 +27,23 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 sys.path.append(str(SCRIPT_DIR.parent))
 
 from sircmw_I_utils import (
-    MU, ALPHA, DELTA, GAMMA, SIGMA, SI_0,
-    sircmw_jacobian, get_C, get_endemic_roots
+    MU, ALPHA, DELTA, GAMMA, SIGMA,
+    sircmw_jacobian, get_endemic_roots
 )
 
-# Scaling factor: I_0 reference
-scale_factor = 0.001
-
-# Parameter ranges
-EPS1_MIN, EPS1_MAX = 0.0, 3.0
-EPS2_MIN, EPS2_MAX = 0.0, 3.0
-BETA0_MIN, BETA0_MAX = 100.0, 2000.0
-
-# Fixed beta0 values for 2D slices
+# =============================================================================
+# CONFIGURATION (Edit contact rates for the 2D stability slices)
+# =============================================================================
 SLICE_BETA_1 = 200.0
 SLICE_BETA_2 = 2000.0
 
-# Grid resolution for 2D stability sweeps
+EPS1_MIN, EPS1_MAX = 0.0, 3.0
+EPS2_MIN, EPS2_MAX = 0.0, 3.0
+BETA0_MIN, BETA0_MAX = 100.0, 2000.0
 GRID_RESOLUTION_2D = 200
 
-# Colors
+scale_factor = 0.00114321
+
 COLOR_STABLE   = '#e46c5c'
 COLOR_UNSTABLE = '#fca636'
 COLOR_3D_START = '#d6556d'
@@ -56,6 +59,7 @@ plt.rcParams.update({
     'legend.fontsize': 14
 })
 
+
 def get_stability_for_sweep(rel_eps1, rel_eps2, beta):
     if beta < (MU + ALPHA):
         return 1.0
@@ -70,11 +74,12 @@ def get_stability_for_sweep(rel_eps1, rel_eps2, beta):
             return 1.0
     return 0.0
 
+
 def eval_stability_single(args):
     return get_stability_for_sweep(*args)
 
+
 def main():
-    # Load 3D surface data
     csv_path = SCRIPT_DIR / "hopf_slices_eps1_indexed.csv"
     if not csv_path.exists():
         print(f"Error: CSV not found at {csv_path}")
@@ -85,7 +90,6 @@ def main():
     df = df[(df['eps1'] <= 3.0) & (df['eps2'] <= 3.0) | df['eps1'].isna() | df['eps2'].isna()]
     beta0_vals = sorted(df['beta0'].dropna().unique())
 
-    # 2D stability sweeps (cached)
     list_eps1 = np.linspace(EPS1_MIN, EPS1_MAX, GRID_RESOLUTION_2D)
     list_eps2 = np.linspace(EPS2_MIN, EPS2_MAX, GRID_RESOLUTION_2D)
     cache_path = SCRIPT_DIR / f"stability_sweep_cache_{GRID_RESOLUTION_2D}.npz"
@@ -109,12 +113,11 @@ def main():
         np.savez(cache_path, Z_slice1=Z_slice1, Z_slice2=Z_slice2)
         print(f"Saved cache to {cache_path}")
 
-    # ── Figure ──────────────────────────────────────────────────────────────────
     fig = plt.figure(figsize=(18, 6.5))
     gs  = fig.add_gridspec(1, 3, width_ratios=[1.2, 1.0, 1.0])
     warm_cmap = mcolors.LinearSegmentedColormap.from_list("warm", [COLOR_3D_START, COLOR_3D_END])
 
-    # ── Left: 3D surface (x=eps2, y=beta0, z=eps1) ──────────────────────────────
+    # --- Left: 3D Surface ---
     ax1 = fig.add_subplot(gs[0], projection='3d')
     N_u = 100
     eps2_lin = np.linspace(0.0, 3.0, N_u)
@@ -131,17 +134,16 @@ def main():
             eps2_mesh[i, :] = eps2_lin
             eps1_mesh[i, :] = f_eps1(eps2_lin)
 
-    N_smooth      = 100
-    beta0_smooth  = np.linspace(min(beta0_vals), max(beta0_vals), N_smooth)
-    eps2_smooth   = np.tile(eps2_lin[np.newaxis, :], (N_smooth, 1))
-    eps1_smooth   = np.full((N_smooth, N_u), np.nan)
-    beta_smooth   = np.tile(beta0_smooth[:, np.newaxis], (1, N_u))
+    N_smooth = 100
+    beta0_smooth = np.linspace(min(beta0_vals), max(beta0_vals), N_smooth)
+    eps2_smooth = np.tile(eps2_lin[np.newaxis, :], (N_smooth, 1))
+    eps1_smooth = np.full((N_smooth, N_u), np.nan)
+    beta_smooth = np.tile(beta0_smooth[:, np.newaxis], (1, N_u))
 
     for j in range(N_u):
         valid = ~np.isnan(eps1_mesh[:, j])
         if np.sum(valid) >= 2:
-            eps1_smooth[:, j] = np.interp(beta0_smooth, np.array(beta0_vals)[valid], eps1_mesh[valid, j],
-                                           left=np.nan, right=np.nan)
+            eps1_smooth[:, j] = np.interp(beta0_smooth, np.array(beta0_vals)[valid], eps1_mesh[valid, j], left=np.nan, right=np.nan)
 
     ax1.plot_surface(eps2_smooth, beta_smooth, eps1_smooth, cmap=warm_cmap, alpha=0.85,
                      shade=True, edgecolor='none', rcount=100, ccount=100)
@@ -160,7 +162,7 @@ def main():
     ax1.view_init(elev=20, azim=-40)
     ax1.grid(True, alpha=0.2)
 
-    # ── 2D slices ───────────────────────────────────────────────────────────────
+    # --- Middle & Right: 2D Slices ---
     cmap_2d = mcolors.ListedColormap([COLOR_UNSTABLE, COLOR_STABLE])
     X, Y = np.meshgrid(list_eps2, list_eps1)
     Z1s = gaussian_filter(Z_slice1, sigma=1.2)
@@ -168,7 +170,7 @@ def main():
 
     ax2 = fig.add_subplot(gs[1])
     ax2.contourf(X, Y, Z1s, levels=[-0.5, 0.5, 1.5], cmap=cmap_2d, alpha=0.95)
-    ax2.contour( X, Y, Z1s, levels=[0.5], colors='white', linestyles='--', linewidths=2.2)
+    ax2.contour(X, Y, Z1s, levels=[0.5], colors='white', linestyles='--', linewidths=2.2)
     ax2.plot([0, 3], [0, 3], color='white', linestyle=':', linewidth=2.0)
     ax2.set_xlabel(r'$\tilde{\varepsilon}_2$')
     ax2.set_ylabel(r'$\tilde{\varepsilon}_1$')
@@ -178,7 +180,7 @@ def main():
 
     ax3 = fig.add_subplot(gs[2])
     ax3.contourf(X, Y, Z2s, levels=[-0.5, 0.5, 1.5], cmap=cmap_2d, alpha=0.95)
-    ax3.contour( X, Y, Z2s, levels=[0.5], colors='white', linestyles='--', linewidths=2.2)
+    ax3.contour(X, Y, Z2s, levels=[0.5], colors='white', linestyles='--', linewidths=2.2)
     ax3.plot([0, 3], [0, 3], color='white', linestyle=':', linewidth=2.0)
     ax3.set_xlabel(r'$\tilde{\varepsilon}_2$')
     ax3.set_ylabel(r'$\tilde{\varepsilon}_1$')
@@ -201,7 +203,8 @@ def main():
     save_path = SCRIPT_DIR / "03_hopf_surface_two_eps.png"
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"Saved PNG to: {save_path}")
+    print(f"Saved: {save_path}")
+
 
 if __name__ == "__main__":
     main()

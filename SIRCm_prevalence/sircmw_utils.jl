@@ -1,4 +1,5 @@
-# Shared utilities for SIRCmw model, equations, and analytical equilibrium solvers (I-feedback formulation).
+# Shared utilities for the prevalence-driven SIRCm model (I-feedback formulation).
+# Provides ODE vector fields, Jacobian matrices, polynomial solvers, and algebraic root sweeps.
 
 using LinearAlgebra
 
@@ -7,12 +8,16 @@ using LinearAlgebra
 const PAR_BASE = (μ = 0.02, α = 365.0/3, δ = 1.0/1.61, γ = 0.35,
                   σ = 0.07874, β0 = 600.0, tilde_eps = 0.01)
 
-const SI_0 = 0.001
+const SI_0 = 0.00114321  # SIRC endemic equilibrium I* at beta0=600
 const tilde_eps_MIN, tilde_eps_MAX = 0.0, 2.0
 const β0_MIN, β0_MAX = 0.0, 2000.0
 const EQ_TOL = 1e-9
 
 
+"""
+In-place ODE vector field for prevalence-driven SIRCm with optional oscillator-driven forcing.
+Supports 4D state (S, I, R, C) or 6D state with harmonic oscillator (w1, w2).
+"""
 function sircmw!(du, u, p, t = 0)
     if length(u) == 4
         S, I, R, C = u
@@ -47,9 +52,10 @@ function sircmw!(du, u, p, t = 0)
     du
 end
 
-# ANALYTICAL EQUILIBRIUM 
 
-# polynomial coefficients for endemic equilibrium I* (symmetric case eps1 = eps2 = eps)
+"""
+Computes coefficients [a0, a1, a2, a3] of the 3rd-degree polynomial in I for endemic equilibria (symmetric case eps1 = eps2 = eps).
+"""
 function poly_coeffs(beta, mu, alpha, gamma, delta, eps, sigma)
     a0 = (alpha - beta + mu) * (gamma + mu) * (delta + mu)
     a3 = beta * delta * eps * (gamma * eps + beta * sigma)
@@ -74,7 +80,10 @@ function poly_coeffs(beta, mu, alpha, gamma, delta, eps, sigma)
     return [a0, a1, a2, a3]
 end
 
-# constructs companion matrix and gets eigenvalues (aka. roots of the poly)
+
+"""
+Finds roots of a polynomial from its coefficient vector by constructing the companion matrix and computing its eigenvalues.
+"""
 function poly_roots(coeffs)
     if length(coeffs) == 4
         c0, c1, c2, c3 = coeffs
@@ -112,7 +121,10 @@ function poly_roots(coeffs)
     end
 end
 
-# recover other compartments from I*
+
+"""
+Reconstructs the full equilibrium state (S*, I*, R*, C*) given a polynomial root I*.
+"""
 function recover_equilibrium(I_star, beta, mu, alpha, gamma, delta, eps, sigma)
     S0 = (mu + alpha) / beta
     
@@ -145,7 +157,6 @@ function recover_equilibrium(I_star, beta, mu, alpha, gamma, delta, eps, sigma)
     end
     R = clamp(R, 0.0, 1.0)
     
-    # Verify sum
     if abs(S + I_star + R + C - 1.0) < 1e-4
         return (S, I_star, R, C)
     end
@@ -153,7 +164,9 @@ function recover_equilibrium(I_star, beta, mu, alpha, gamma, delta, eps, sigma)
 end
 
 
-# builds the Jacobian matrix for SIRCmw
+"""
+Computes the analytical 4x4 Jacobian matrix for the prevalence-driven SIRCm model.
+"""
 function jacobian_sircmw(u, p)
     S, I, R, C = u
     b = p.β0
@@ -161,7 +174,6 @@ function jacobian_sircmw(u, p)
     eps1 = hasproperty(p, :eps1) ? p.eps1 : (hasproperty(p, :tilde_eps) ? p.tilde_eps / SI_0 : 0.0)
     eps2 = hasproperty(p, :eps2) ? p.eps2 : (hasproperty(p, :tilde_eps) ? p.tilde_eps / SI_0 : 0.0)
 
-    
     # Row 1
     J11 = -p.μ - b*I
     J12 = -b*S + eps2*p.γ*C
@@ -192,7 +204,10 @@ function jacobian_sircmw(u, p)
             J41 J42 J43 J44]
 end
 
-# Roots sweep helpers
+
+"""
+Robust 1D bisection root-finder on interval [a, b].
+"""
 function bisection(f, a, b, tol=1e-9, maxiter=100)
     fa = f(a)
     fb = f(b)
@@ -213,6 +228,10 @@ function bisection(f, a, b, tol=1e-9, maxiter=100)
     return (a + b) / 2
 end
 
+
+"""
+Calculates cross-immune population fraction C from I for asymmetric eps2.
+"""
 function get_C(I, eps2, S0, beta0, γ=PAR_BASE.γ, σ=PAR_BASE.σ, μ=PAR_BASE.μ)
     P_val = beta0 * S0 * I - μ * (1.0 - S0)
     Q_val = (beta0 * σ + eps2 * γ) * I + (γ + μ * σ)
@@ -226,6 +245,10 @@ function get_C(I, eps2, S0, beta0, γ=PAR_BASE.γ, σ=PAR_BASE.σ, μ=PAR_BASE.�
     return nothing
 end
 
+
+"""
+Finds all physical endemic equilibria via 1D polynomial reduction for asymmetric (eps1, eps2).
+"""
 function get_endemic_roots(eps1, eps2, beta0; μ=PAR_BASE.μ, α=PAR_BASE.α, δ=PAR_BASE.δ, γ=PAR_BASE.γ, σ=PAR_BASE.σ)
     S0 = (μ + α) / beta0
     if S0 >= 1.0

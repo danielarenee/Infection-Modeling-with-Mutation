@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 """
-SIRC vs. SIRCmw endemic prevalence comparison for tilde_eps from 0.0 to 0.5
+Endemic prevalence bifurcation curves vs beta0 (Prevalence-driven variant)
+
+Computes endemic equilibrium prevalence curves and Hopf bifurcation thresholds
+as a function of the transmission rate beta0 across multiple feedback values (tilde_eps),
+comparing SIRC (tilde_eps = 0) with the prevalence-driven SIRCm model.
+
+OUTPUT: Figure 11
 """
 
 import sys
@@ -27,7 +33,7 @@ from sircmw_I_utils import (
     BETA0 as beta0
 )
 
-scale_factor = 0.001
+scale_factor = 0.00114321  # SIRC endemic equilibrium I* at beta0=600
 transcritical_beta0 = mu + alpha
 
 # Plot limits
@@ -129,13 +135,9 @@ def main():
     
     plt.tight_layout()
     
-    save_comp_png = SCRIPT_DIR / "sircmw_prevalence_comparison.png"
-    plt.savefig(save_comp_png, dpi=300)
+    save_comp_png = SCRIPT_DIR / "11_endemic_prevalence.png"
+    plt.savefig(save_comp_png, dpi=300, bbox_inches='tight')
     print(f"Saved: {save_comp_png.resolve()}")
-    
-    save_comp_pdf = SCRIPT_DIR / "sircmw_prevalence_comparison.pdf"
-    plt.savefig(save_comp_pdf, dpi=300)
-    print(f"Saved: {save_comp_pdf.resolve()}")
     plt.close()
 
 if __name__ == "__main__":

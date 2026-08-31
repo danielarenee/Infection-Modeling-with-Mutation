@@ -1,4 +1,12 @@
-# SIRC vs SIRCmw endemic prevalence comparison (2-Panel Plot)
+"""
+Endemic prevalence bifurcation curves vs beta0 (Transmission-driven variant)
+
+Performs numerical continuation and stability analysis of endemic equilibrium branches
+as a function of the baseline transmission rate beta0 across multiple feedback values (tilde_eps),
+comparing SIRC (tilde_eps = 0) with transmission-driven SIRCm.
+
+OUTPUT: Figure 10
+"""
 
 using Logging
 using Serialization
@@ -10,14 +18,12 @@ import BifurcationKit: @optic, @set
 
 ENV["GKSwstype"] = "100"
 
-# --- EXPERIMENTAL ZOOM PARAMETER ---
-# Maximum contact rate beta0 for the right panel (decrease to zoom in, increase to zoom out)
+# Maximum contact rate beta0 for the right panel
 const RIGHT_PANEL_BETA0_MAX = 1500.0
-# -----------------------------------
 
-# Include the shared utilities from the grandparent directory
+# Include shared utilities
 const PLOTTING_DIR = @__DIR__
-include(joinpath(PLOTTING_DIR, "..", "..", "sircmw_utils.jl"))
+include(joinpath(PLOTTING_DIR, "..", "sircmw_utils.jl"))
 
 # Continuation parameters
 const OPTS_SCAN = BK.ContinuationPar(
@@ -33,7 +39,7 @@ const OPTS_SCAN = BK.ContinuationPar(
 
 # Helper function to get the endemic equilibrium
 function get_endemic_equilibrium(p)
-    SI_0 = 0.178 * 0.001
+    SI_0 = 0.0002045191
     eps = p.tilde_eps / SI_0
     coeffs = poly_coeffs(p.β0, p.μ, p.α, p.γ, p.δ, eps, p.σ)
     roots = poly_roots(coeffs)
@@ -172,22 +178,16 @@ function generate_plots()
         end
     end
     
-    # Add dummy entries at the end of the right panel legend to keep them ordered last
     plot!(plt_right, [NaN], [NaN]; lc = :black, lw = 2.0, label = "Stable state")
     plot!(plt_right, [NaN], [NaN]; lc = :black, lw = 2.0, ls = :dash, label = "Unstable state")
     scatter!(plt_right, [NaN], [NaN]; mc = :green, ms = 7, marker = :diamond, label = "Hopf point")
     
-    # Combine the plots into a 2-panel figure
     println("Saving final combined plot...")
     plt_combined = plot(plt_left, plt_right; layout = (1, 2), size = (1500, 650))
     
-    output_png = joinpath(PLOTTING_DIR, "prevalence_comparison_two_panels.png")
+    output_png = joinpath(PLOTTING_DIR, "10_endemic_prevalence.png")
     savefig(plt_combined, output_png)
     println("Saved PNG plot to: $output_png")
-    
-    output_pdf = joinpath(PLOTTING_DIR, "prevalence_comparison_two_panels.pdf")
-    savefig(plt_combined, output_pdf)
-    println("Saved PDF plot to: $output_pdf")
 end
 
 generate_plots()
